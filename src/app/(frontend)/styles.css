@@ -241,6 +241,133 @@ svg {
   }
 }
 
+.lk-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.lk-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.lk-tab {
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-light);
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+
+  &:hover {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--color-primary);
+  }
+
+  &.active {
+    background: var(--color-primary);
+    color: white;
+  }
+}
+
+.lk-materials {
+  background: var(--color-surface);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.1);
+}
+
+.lk-empty {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--color-text-light);
+
+  p {
+    margin: 0;
+    font-size: 16px;
+  }
+}
+
+.materials-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.material-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: var(--color-background);
+  border-radius: 12px;
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+  }
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+.material-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.material-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.material-title {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.material-description {
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: var(--color-text-light);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.material-date {
+  font-size: 12px;
+  color: var(--color-text-light);
+  opacity: 0.7;
+}
+
+.material-download {
+  flex-shrink: 0;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+  }
+}
+
 /* Auth Forms */
 .auth-form-container {
   display: flex;
