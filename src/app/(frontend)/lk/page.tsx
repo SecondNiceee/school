@@ -61,6 +61,12 @@ export default async function LKPage() {
                     {material.description && (
                       <p className="material-description">{material.description}</p>
                     )}
+                    {material.fileName && (
+                      <span className="material-filename">
+                        {material.fileName}
+                        {material.fileSize && ` (${formatFileSize(material.fileSize)})`}
+                      </span>
+                    )}
                     <span className="material-date">
                       {new Date(material.createdAt).toLocaleDateString('ru-RU', {
                         day: 'numeric',
@@ -69,15 +75,25 @@ export default async function LKPage() {
                       })}
                     </span>
                   </div>
-                  <a
-                    href={material.fileUrl}
-                    className="material-download"
-                    download={material.fileName}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Скачать
-                  </a>
+                  <div className="material-actions">
+                    <a
+                      href={material.fileUrl}
+                      className="material-open"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Открыть
+                    </a>
+                    <a
+                      href={material.fileUrl}
+                      className="material-download"
+                      download={material.fileName || 'file'}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Скачать
+                    </a>
+                  </div>
                 </div>
               ))}
             </div>
@@ -86,6 +102,14 @@ export default async function LKPage() {
       </div>
     </div>
   )
+}
+
+function formatFileSize(bytes: number): string {
+  if (bytes === 0) return '0 Bytes'
+  const k = 1024
+  const sizes = ['Bytes', 'KB', 'MB', 'GB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
 }
 
 function getFileIcon(fileName: string): string {
