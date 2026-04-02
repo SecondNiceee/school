@@ -6,18 +6,10 @@ export const Users: CollectionConfig = {
     useAsTitle: 'email',
   },
   auth: {
-    verify: {
-      generateEmailHTML: ({ token, user }) => {
-        const url = `${process.env.NEXT_PUBLIC_SERVER_URL}/verify-email?token=${token}`
-        return `
-          <h1>Подтвердите ваш email</h1>
-          <p>Здравствуйте${user.name ? `, ${user.name}` : ''}!</p>
-          <p>Пожалуйста, подтвердите ваш email, перейдя по ссылке:</p>
-          <a href="${url}">${url}</a>
-        `
-      },
-      generateEmailSubject: () => 'Подтверждение email',
-    },
+    // verify: true включает поле _verified в коллекции
+    // Автоматическую отправку письма отключаем через disableVerificationEmail в payload.create()
+    // Наша верификация по коду реализована в /api/auth/register и /api/auth/verify-code
+    verify: true,
   },
   fields: [
     {

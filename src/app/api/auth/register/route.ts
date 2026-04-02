@@ -92,6 +92,7 @@ export async function POST(req: NextRequest) {
         verificationCode,
         verificationCodeExpires: verificationCodeExpires.toISOString(),
       },
+      disableVerificationEmail: true, // Отключаем письмо от Payload - используем свою систему с кодом
     })
 
     await sendVerificationCodeEmail({
