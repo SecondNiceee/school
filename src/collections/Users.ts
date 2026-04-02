@@ -26,6 +26,22 @@ export const Users: CollectionConfig = {
       label: 'Имя',
     },
     {
+      name: 'verificationCode',
+      type: 'text',
+      label: 'Код верификации',
+      admin: {
+        hidden: true,
+      },
+    },
+    {
+      name: 'verificationCodeExpires',
+      type: 'date',
+      label: 'Срок действия кода',
+      admin: {
+        hidden: true,
+      },
+    },
+    {
       name: 'role',
       type: 'select',
       options: [

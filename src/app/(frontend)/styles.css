@@ -307,6 +307,46 @@ svg {
   }
 }
 
+.verify-info {
+  text-align: center;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0 0 8px 0;
+
+  strong {
+    color: white;
+  }
+}
+
+.code-input {
+  text-align: center;
+  font-size: 32px !important;
+  font-weight: bold;
+  letter-spacing: 12px;
+  padding: 16px !important;
+}
+
+.resend-btn {
+  padding: 12px 24px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+
+  &:hover:not(:disabled) {
+    border-color: rgba(255, 255, 255, 0.4);
+    color: white;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
 /* Verify Email Page */
 .verify-page {
   display: flex;

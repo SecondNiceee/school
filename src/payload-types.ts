@@ -124,6 +124,8 @@ export interface UserAuthOperations {
 export interface User {
   id: number;
   name?: string | null;
+  verificationCode?: string | null;
+  verificationCodeExpires?: string | null;
   role: 'user' | 'admin';
   updatedAt: string;
   createdAt: string;
@@ -245,6 +247,8 @@ export interface PayloadMigration {
  */
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
+  verificationCode?: T;
+  verificationCodeExpires?: T;
   role?: T;
   updatedAt?: T;
   createdAt?: T;
