@@ -22,7 +22,7 @@ export default buildConfig({
   },
   collections: [Users, Media, Materials],
   editor: lexicalEditor(),
-  secret: process.env.PAYLOAD_SECRET || '',
+  secret: process.env.PAYLOAD_SECRET!,
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
@@ -31,18 +31,20 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URL || '',
     },
   }),
-  email: nodemailerAdapter({
-    defaultFromAddress: process.env.SMTP_FROM || 'no-reply@example.com',
-    defaultFromName: process.env.SMTP_FROM_NAME || 'School',
-    transportOptions: {
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT || 587),
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    },
-  }),
+  email: process.env.SMTP_HOST
+    ? nodemailerAdapter({
+        defaultFromAddress: process.env.SMTP_FROM || 'no-reply@example.com',
+        defaultFromName: process.env.SMTP_FROM_NAME || 'School',
+        transportOptions: {
+          host: process.env.SMTP_HOST,
+          port: Number(process.env.SMTP_PORT || 587),
+          auth: {
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS,
+          },
+        },
+      })
+    : undefined,
   sharp,
   plugins: [],
 })
