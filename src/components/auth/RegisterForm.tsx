@@ -11,6 +11,7 @@ export function RegisterForm() {
   const [success, setSuccess] = useState<string | null>(null)
   const [step, setStep] = useState<'register' | 'verify'>('register')
   const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [code, setCode] = useState('')
 
   async function handleRegister(e: React.FormEvent<HTMLFormElement>) {
@@ -39,6 +40,7 @@ export function RegisterForm() {
 
       if (data.requiresVerification) {
         setEmail(emailValue)
+        setPassword(password) // Сохраняем пароль для автоматического логина после верификации
         setStep('verify')
       }
     } catch {
@@ -54,21 +56,38 @@ export function RegisterForm() {
     setError(null)
 
     try {
-      const response = await fetch('/api/auth/verify-code', {
+      // Шаг 1: Верификация кода
+      const verifyResponse = await fetch('/api/auth/verify-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, code }),
       })
 
-      const data = await response.json()
+      const verifyData = await verifyResponse.json()
 
-      if (!response.ok) {
-        setError(data.message || 'Ошибка при проверке кода')
+      if (!verifyResponse.ok) {
+        setError(verifyData.message || 'Ошибка при проверке кода')
         return
       }
 
-      setSuccess('Email подтвержден! Теперь вы можете войти.')
-      setTimeout(() => router.push('/login'), 2000)
+      // Шаг 2: Автоматический вход после успешной верификации
+      setSuccess('Email подтвержден! Выполняем вход...')
+      
+      const loginResponse = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      })
+
+      if (loginResponse.ok) {
+        // Успешный вход - перенаправляем на главную
+        router.push('/')
+        router.refresh() // Обновляем данные сессии
+      } else {
+        // Если автоматический вход не удался, отправляем на страницу логина
+        setSuccess('Email подтвержден! Перенаправление на страницу входа...')
+        setTimeout(() => router.push('/login'), 1500)
+      }
     } catch {
       setError('Произошла ошибка. Попробуйте позже.')
     } finally {
