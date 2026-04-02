@@ -152,21 +152,6 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "materials".
- */
-export interface Material {
-  id: number;
-  title: string;
-  description?: string | null;
-  fileUrl: string;
-  fileName?: string | null;
-  fileSize?: number | null;
-  assignedTo: (number | User)[];
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
 export interface Media {
@@ -183,6 +168,26 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+}
+/**
+ * Учебные материалы для учеников
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "materials".
+ */
+export interface Material {
+  id: number;
+  title: string;
+  description?: string | null;
+  fileUrl: string;
+  fileName?: string | null;
+  fileSize?: number | null;
+  /**
+   * Выберите учеников, которым будет доступен этот материал
+   */
+  assignedTo: (number | User)[];
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -292,20 +297,6 @@ export interface UsersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "materials_select".
- */
-export interface MaterialsSelect<T extends boolean = true> {
-  title?: T;
-  description?: T;
-  fileUrl?: T;
-  fileName?: T;
-  fileSize?: T;
-  assignedTo?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
@@ -321,6 +312,20 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "materials_select".
+ */
+export interface MaterialsSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  fileUrl?: T;
+  fileName?: T;
+  fileSize?: T;
+  assignedTo?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
