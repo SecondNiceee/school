@@ -12,17 +12,15 @@ export const Materials: CollectionConfig = {
     description: 'Учебные материалы для учеников',
   },
   access: {
-    // Только админы могут создавать/редактировать/удалять
     create: ({ req: { user } }) => user?.role === 'admin',
     update: ({ req: { user } }) => user?.role === 'admin',
     delete: ({ req: { user } }) => user?.role === 'admin',
-    // Пользователи могут читать только свои материалы
     read: ({ req: { user } }) => {
       if (!user) return false
       if (user.role === 'admin') return true
       return {
-        assignedTo: {
-          equals: user.id,
+        'assignedTo.id': {
+          contains: user.id,
         },
       }
     },
@@ -38,6 +36,35 @@ export const Materials: CollectionConfig = {
       name: 'description',
       type: 'textarea',
       label: 'Описание',
+    },
+    {
+      name: 'fileUrl',
+      type: 'text',
+      label: 'URL файла',
+      required: true,
+      admin: {
+        components: {
+          Field: '/components/MaterialUpload#MaterialUploadField',
+        },
+      },
+    },
+    {
+      name: 'fileName',
+      type: 'text',
+      label: 'Имя файла',
+      admin: {
+        readOnly: true,
+        hidden: true,
+      },
+    },
+    {
+      name: 'fileSize',
+      type: 'number',
+      label: 'Размер файла',
+      admin: {
+        readOnly: true,
+        hidden: true,
+      },
     },
     {
       name: 'assignedTo',
@@ -56,19 +83,4 @@ export const Materials: CollectionConfig = {
       },
     },
   ],
-  upload: {
-    staticDir: 'materials',
-    mimeTypes: [
-      'application/pdf',
-      'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      'application/vnd.ms-excel',
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'application/vnd.ms-powerpoint',
-      'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-      'image/*',
-      'video/*',
-      'audio/*',
-    ],
-  },
 }

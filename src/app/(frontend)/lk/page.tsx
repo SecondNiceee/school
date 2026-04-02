@@ -5,7 +5,6 @@ import React from 'react'
 import Link from 'next/link'
 
 import config from '@/payload.config'
-import type { Material } from '@/payload-types'
 
 export default async function LKPage() {
   const headers = await getHeaders()
@@ -13,12 +12,10 @@ export default async function LKPage() {
   const payload = await getPayload({ config: payloadConfig })
   const { user } = await payload.auth({ headers })
 
-  // Если пользователь не залогинен - редирект на главную
   if (!user) {
     redirect('/')
   }
 
-  // Получаем материалы, назначенные текущему пользователю
   const materialsResponse = await payload.find({
     collection: 'materials',
     where: {
@@ -29,7 +26,7 @@ export default async function LKPage() {
     sort: '-createdAt',
   })
 
-  const materials = materialsResponse.docs as Material[]
+  const materials = materialsResponse.docs
 
   return (
     <div className="lk-page">
@@ -57,7 +54,7 @@ export default async function LKPage() {
               {materials.map((material) => (
                 <div key={material.id} className="material-card">
                   <div className="material-icon">
-                    {getFileIcon(material.mimeType || '')}
+                    {getFileIcon(material.fileName || '')}
                   </div>
                   <div className="material-info">
                     <h3 className="material-title">{material.title}</h3>
@@ -73,9 +70,9 @@ export default async function LKPage() {
                     </span>
                   </div>
                   <a
-                    href={material.url || '#'}
+                    href={material.fileUrl}
                     className="material-download"
-                    download
+                    download={material.fileName}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -91,13 +88,14 @@ export default async function LKPage() {
   )
 }
 
-function getFileIcon(mimeType: string): string {
-  if (mimeType.startsWith('image/')) return '🖼️'
-  if (mimeType.startsWith('video/')) return '🎬'
-  if (mimeType.startsWith('audio/')) return '🎵'
-  if (mimeType.includes('pdf')) return '📄'
-  if (mimeType.includes('word') || mimeType.includes('document')) return '📝'
-  if (mimeType.includes('excel') || mimeType.includes('spreadsheet')) return '📊'
-  if (mimeType.includes('powerpoint') || mimeType.includes('presentation')) return '📽️'
+function getFileIcon(fileName: string): string {
+  const ext = fileName.split('.').pop()?.toLowerCase() || ''
+  if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(ext)) return '🖼️'
+  if (['mp4', 'webm', 'mov', 'avi'].includes(ext)) return '🎬'
+  if (['mp3', 'wav', 'ogg', 'flac'].includes(ext)) return '🎵'
+  if (ext === 'pdf') return '📄'
+  if (['doc', 'docx'].includes(ext)) return '📝'
+  if (['xls', 'xlsx'].includes(ext)) return '📊'
+  if (['ppt', 'pptx'].includes(ext)) return '📽️'
   return '📁'
 }
