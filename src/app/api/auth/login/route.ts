@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
       },
     })
 
-    if (!result.token) {
+    if (!result.token || !result.user) {
       return NextResponse.json({ message: 'Неверный email или пароль' }, { status: 401 })
     }
 
