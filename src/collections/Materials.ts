@@ -44,7 +44,7 @@ export const Materials: CollectionConfig = {
       required: true,
       admin: {
         components: {
-          Field: '/components/MaterialUpload#MaterialUploadField',
+          Field: '@/components/MaterialUpload#MaterialUploadField',
         },
       },
     },

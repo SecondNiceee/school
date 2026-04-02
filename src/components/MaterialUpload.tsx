@@ -2,12 +2,10 @@
 
 import React, { useState } from 'react'
 import { useField } from '@payloadcms/ui'
+import type { TextFieldClientComponent } from 'payload'
 
-export const MaterialUploadField: React.FC<{
-  path: string
-  field: { name: string }
-}> = ({ path }) => {
-  const { value, setValue } = useField<string>({ path })
+export const MaterialUploadField: TextFieldClientComponent = ({ path }) => {
+  const { value, setValue } = useField<string>({ path: path || 'fileUrl' })
   const fileNameField = useField<string>({ path: 'fileName' })
   const fileSizeField = useField<string>({ path: 'fileSize' })
   
