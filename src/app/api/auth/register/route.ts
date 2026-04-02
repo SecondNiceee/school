@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
         payload,
         email,
         code: verificationCode,
-        name: name ?? candidate.name,
+        name: name ?? candidate.name as string,
       })
 
       return NextResponse.json(
@@ -83,6 +83,7 @@ export async function POST(req: NextRequest) {
     const verificationCodeExpires = new Date(Date.now() + 10 * 60 * 1000) // 10 minutes
 
     await payload.create({
+
       collection: 'users',
       data: {
         name: name ?? '',
