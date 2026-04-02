@@ -32,7 +32,7 @@ export function LoginForm() {
         return
       }
 
-      router.push('/')
+      router.push('/lk')
       router.refresh()
     } catch {
       setError('Произошла ошибка. Попробуйте позже.')
