@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import { sendVerificationEmail } from '@/utils/sendVerificationEmail'
+import { sendVerificationCodeEmail } from '@/utils/sendVerificationCodeEmail'
 
 type RegisterBody = {
   name?: string
@@ -9,12 +9,15 @@ type RegisterBody = {
   password: string
 }
 
+function generateVerificationCode(): string {
+  return Math.floor(100 + Math.random() * 900).toString()
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = (await req.json()) as RegisterBody
     const { name, email, password } = body
 
-    // Basic validation
     if (!email || !password) {
       return NextResponse.json({ message: 'Email и пароль обязательны' }, { status: 400 })
     }
@@ -28,7 +31,6 @@ export async function POST(req: NextRequest) {
 
     const payload = await getPayload({ config })
 
-    // Check if user already exists
     const existing = await payload.find({
       collection: 'users',
       where: { email: { equals: email } },
@@ -37,7 +39,7 @@ export async function POST(req: NextRequest) {
     })
 
     const candidate = existing.docs[0] as
-      | (typeof existing.docs[0] & { _verified?: boolean; _verificationToken?: string })
+      | (typeof existing.docs[0] & { _verified?: boolean })
       | undefined
 
     if (candidate) {
@@ -48,33 +50,38 @@ export async function POST(req: NextRequest) {
         )
       }
 
-      // User exists but not verified — update name and resend verification email
-      const updatedUser = (await payload.update({
+      // User exists but not verified — generate new code and resend
+      const verificationCode = generateVerificationCode()
+      const verificationCodeExpires = new Date(Date.now() + 10 * 60 * 1000) // 10 minutes
+
+      await payload.update({
         collection: 'users',
         id: candidate.id,
-        data: { name: name ?? candidate.name ?? '' },
+        data: {
+          name: name ?? candidate.name ?? '',
+          verificationCode,
+          verificationCodeExpires: verificationCodeExpires.toISOString(),
+        },
         overrideAccess: true,
-        showHiddenFields: true,
-      })) as typeof candidate
+      })
 
-      const token = updatedUser._verificationToken ?? candidate._verificationToken
-
-      if (token) {
-        await sendVerificationEmail({
-          payload,
-          email,
-          token,
-          name: updatedUser.name ?? name,
-        })
-      }
+      await sendVerificationCodeEmail({
+        payload,
+        email,
+        code: verificationCode,
+        name: name ?? candidate.name,
+      })
 
       return NextResponse.json(
-        { message: 'Письмо с подтверждением отправлено повторно.' },
+        { message: 'Код подтверждения отправлен на вашу почту.', requiresVerification: true },
         { status: 200 },
       )
     }
 
-    // Create new user — Payload will send verification email automatically
+    // Create new user with verification code
+    const verificationCode = generateVerificationCode()
+    const verificationCodeExpires = new Date(Date.now() + 10 * 60 * 1000) // 10 minutes
+
     await payload.create({
       collection: 'users',
       data: {
@@ -82,11 +89,20 @@ export async function POST(req: NextRequest) {
         email,
         password,
         role: 'user',
+        verificationCode,
+        verificationCodeExpires: verificationCodeExpires.toISOString(),
       },
     })
 
+    await sendVerificationCodeEmail({
+      payload,
+      email,
+      code: verificationCode,
+      name,
+    })
+
     return NextResponse.json(
-      { message: 'Подтвердите почту перед входом в аккаунт.' },
+      { message: 'Код подтверждения отправлен на вашу почту.', requiresVerification: true },
       { status: 201 },
     )
   } catch (error: unknown) {
