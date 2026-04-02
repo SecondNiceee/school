@@ -92,13 +92,12 @@ svg {
 .home {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
   padding: 45px;
   max-width: 1024px;
   margin: 0 auto;
-  overflow: hidden;
 
   @media (max-width: 400px) {
     padding: 24px;
@@ -109,10 +108,35 @@ svg {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    flex-grow: 1;
 
     h1 {
       text-align: center;
+      margin-bottom: 24px;
+    }
+  }
+
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 32px;
+    padding: 24px 32px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+
+    .user-name {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 600;
+      color: white;
+    }
+
+    .user-email {
+      margin: 0;
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.6);
     }
   }
 
