@@ -123,125 +123,95 @@ export function RegisterForm() {
   }
 
   return (
-    <div className="auth-page">
-      <div className="auth-card">
-        <div className="auth-card-logo" aria-hidden="true">
-          <svg width="40" height="40" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="18" cy="18" r="17" stroke="url(#lg2)" strokeWidth="2"/>
-            <circle cx="18" cy="18" r="5" fill="url(#lg2)"/>
-            <ellipse cx="18" cy="18" rx="12" ry="5" stroke="url(#lg2)" strokeWidth="1.5"/>
-            <ellipse cx="18" cy="18" rx="12" ry="5" stroke="url(#lg2)" strokeWidth="1.5" transform="rotate(60 18 18)"/>
-            <ellipse cx="18" cy="18" rx="12" ry="5" stroke="url(#lg2)" strokeWidth="1.5" transform="rotate(120 18 18)"/>
-            <defs>
-              <linearGradient id="lg2" x1="1" y1="1" x2="35" y2="35" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#6366f1"/><stop offset="1" stopColor="#f472b6"/>
-              </linearGradient>
-            </defs>
-          </svg>
-        </div>
-        <h1 className="auth-title">{step === 'register' ? 'Регистрация' : 'Подтверждение'}</h1>
-        <p className="auth-subtitle">
-          {step === 'register' ? 'Создайте аккаунт для начала обучения' : 'Введите код из письма'}
-        </p>
+    <div className="auth-form-container">
+      <h1>{step === 'register' ? 'Регистрация' : 'Подтверждение'}</h1>
 
-        {error && <div className="message error">{error}</div>}
+      {error && <div className="message error">{error}</div>}
+      {success && <div className="message success">{success}</div>}
 
-        {success && (
-          <div className="message success-prominent">
-            <div className="success-icon" aria-hidden="true">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="12" r="11" fill="#059669"/>
-                <path d="M7 12.5l3.5 3.5 6.5-7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-            <span>{success}</span>
+      {step === 'register' && (
+        <form onSubmit={handleRegister} className="auth-form">
+          <div className="form-group">
+            <label htmlFor="name">Имя</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              placeholder="Введите ваше имя"
+              required
+            />
           </div>
-        )}
 
-        {step === 'register' && (
-          <form onSubmit={handleRegister} className="auth-form">
-            <div className="form-group">
-              <label htmlFor="name">Имя</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                placeholder="Введите ваше имя"
-                required
-              />
-            </div>
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Введите email"
+              required
+            />
+          </div>
 
-            <div className="form-group">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="Введите email"
-                required
-              />
-            </div>
+          <div className="form-group">
+            <label htmlFor="password">Пароль</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Минимум 8 символов"
+              minLength={8}
+              required
+            />
+          </div>
 
-            <div className="form-group">
-              <label htmlFor="password">Пароль</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Минимум 8 символов"
-                minLength={8}
-                required
-              />
-            </div>
+          <button type="submit" className="submit-btn" disabled={isLoading}>
+            {isLoading ? 'Регистрация...' : 'Зарегистрироваться'}
+          </button>
+        </form>
+      )}
 
-            <button type="submit" className="submit-btn" disabled={isLoading}>
-              {isLoading ? 'Регистрация...' : 'Зарегистрироваться'}
-            </button>
-          </form>
-        )}
+      {step === 'verify' && !success && (
+        <form onSubmit={handleVerify} className="auth-form">
+          <p className="verify-info">
+            Мы отправили 3-значный код на <strong>{email}</strong>
+          </p>
 
-        {step === 'verify' && !success && (
-          <form onSubmit={handleVerify} className="auth-form">
-            <p className="verify-info">
-              Мы отправили 3-значный код на <strong>{email}</strong>
-            </p>
+          <div className="form-group">
+            <label htmlFor="code">Код подтверждения</label>
+            <input
+              type="text"
+              id="code"
+              name="code"
+              placeholder="000"
+              maxLength={3}
+              pattern="[0-9]{3}"
+              value={code}
+              onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
+              className="code-input"
+              required
+              autoFocus
+            />
+          </div>
 
-            <div className="form-group">
-              <label htmlFor="code">Код подтверждения</label>
-              <input
-                type="text"
-                id="code"
-                name="code"
-                placeholder="000"
-                maxLength={3}
-                pattern="[0-9]{3}"
-                value={code}
-                onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
-                className="code-input"
-                required
-                autoFocus
-              />
-            </div>
+          <button type="submit" className="submit-btn" disabled={isLoading || code.length !== 3}>
+            {isLoading ? 'Проверка...' : 'Подтвердить'}
+          </button>
 
-            <button type="submit" className="submit-btn" disabled={isLoading || code.length !== 3}>
-              {isLoading ? 'Проверка...' : 'Подтвердить'}
-            </button>
+          <button
+            type="button"
+            className="resend-btn"
+            onClick={handleResendCode}
+            disabled={isLoading}
+          >
+            Отправить код повторно
+          </button>
+        </form>
+      )}
 
-            <button
-              type="button"
-              className="resend-btn"
-              onClick={handleResendCode}
-              disabled={isLoading}
-            >
-              Отправить код повторно
-            </button>
-          </form>
-        )}
-
-        <p className="auth-link">
-          Уже есть аккаунт? <Link href="/login">Войти</Link>
-        </p>
-      </div>
+      <p className="auth-link">
+        Уже есть аккаунт? <Link href="/login">Войти</Link>
+      </p>
     </div>
   )
 }

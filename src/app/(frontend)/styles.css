@@ -103,27 +103,23 @@ svg {
 .home {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   min-height: 100vh;
-  position: relative;
-  overflow: hidden;
+  padding: 45px;
+  max-width: 1024px;
+  margin: 0 auto;
+  text-align: center;
+
+  @media (max-width: 400px) {
+    padding: 24px;
+  }
 
   .content {
-    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 45px;
-    max-width: 1024px;
-    margin: 0 auto;
-    width: 100%;
-    text-align: center;
-    position: relative;
-    z-index: 1;
-
-    @media (max-width: 400px) {
-      padding: 24px;
-    }
 
     h1 {
       text-align: center;
@@ -186,137 +182,6 @@ svg {
       }
     }
   }
-}
-
-/* Home header */
-.home-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 40px;
-  position: relative;
-  z-index: 2;
-
-  @media (max-width: 640px) {
-    padding: 16px 20px;
-  }
-}
-
-.home-logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--color-text);
-  text-decoration: none;
-
-  span {
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-}
-
-.header-login-btn {
-  padding: 10px 24px;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-primary);
-  background: var(--color-surface);
-  border: 2px solid var(--color-primary);
-  border-radius: 10px;
-  text-decoration: none;
-  transition: background 0.2s, color 0.2s, transform 0.2s;
-
-  &:hover {
-    background: var(--color-primary);
-    color: white;
-    transform: translateY(-1px);
-  }
-}
-
-/* Animated background shapes */
-.bg-shapes {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-  z-index: 0;
-}
-
-.shape {
-  position: absolute;
-  border-radius: 50%;
-  opacity: 0.12;
-  animation: float linear infinite;
-}
-
-.shape-1 {
-  width: 320px;
-  height: 320px;
-  background: var(--color-primary);
-  top: -80px;
-  left: -80px;
-  animation-duration: 18s;
-}
-
-.shape-2 {
-  width: 220px;
-  height: 220px;
-  background: var(--color-secondary);
-  top: 20%;
-  right: -60px;
-  animation-duration: 14s;
-  animation-delay: -4s;
-}
-
-.shape-3 {
-  width: 160px;
-  height: 160px;
-  background: var(--color-accent);
-  bottom: 15%;
-  left: 10%;
-  animation-duration: 20s;
-  animation-delay: -8s;
-}
-
-.shape-4 {
-  width: 100px;
-  height: 100px;
-  background: var(--color-warning);
-  top: 55%;
-  right: 20%;
-  animation-duration: 12s;
-  animation-delay: -2s;
-}
-
-.shape-5 {
-  width: 260px;
-  height: 260px;
-  background: var(--color-primary-light);
-  bottom: -60px;
-  right: -40px;
-  animation-duration: 22s;
-  animation-delay: -10s;
-}
-
-.shape-6 {
-  width: 80px;
-  height: 80px;
-  background: var(--color-secondary);
-  top: 40%;
-  left: 30%;
-  animation-duration: 16s;
-  animation-delay: -6s;
-}
-
-@keyframes float {
-  0%   { transform: translateY(0px) rotate(0deg) scale(1); }
-  33%  { transform: translateY(-24px) rotate(120deg) scale(1.05); }
-  66%  { transform: translateY(16px) rotate(240deg) scale(0.95); }
-  100% { transform: translateY(0px) rotate(360deg) scale(1); }
 }
 
 /* Личный кабинет */

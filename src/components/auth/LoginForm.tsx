@@ -42,59 +42,42 @@ export function LoginForm() {
   }
 
   return (
-    <div className="auth-page">
-      <div className="auth-card">
-        <div className="auth-card-logo" aria-hidden="true">
-          <svg width="40" height="40" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="18" cy="18" r="17" stroke="url(#lg1)" strokeWidth="2"/>
-            <circle cx="18" cy="18" r="5" fill="url(#lg1)"/>
-            <ellipse cx="18" cy="18" rx="12" ry="5" stroke="url(#lg1)" strokeWidth="1.5"/>
-            <ellipse cx="18" cy="18" rx="12" ry="5" stroke="url(#lg1)" strokeWidth="1.5" transform="rotate(60 18 18)"/>
-            <ellipse cx="18" cy="18" rx="12" ry="5" stroke="url(#lg1)" strokeWidth="1.5" transform="rotate(120 18 18)"/>
-            <defs>
-              <linearGradient id="lg1" x1="1" y1="1" x2="35" y2="35" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#6366f1"/><stop offset="1" stopColor="#f472b6"/>
-              </linearGradient>
-            </defs>
-          </svg>
+    <div className="auth-form-container">
+      <h1>Вход</h1>
+
+      {error && <div className="message error">{error}</div>}
+
+      <form onSubmit={handleSubmit} className="auth-form">
+        <div className="form-group">
+          <label htmlFor="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Введите email"
+            required
+          />
         </div>
-        <h1 className="auth-title">Войти</h1>
-        <p className="auth-subtitle">Введите данные для входа в аккаунт</p>
 
-        {error && <div className="message error">{error}</div>}
+        <div className="form-group">
+          <label htmlFor="password">Пароль</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Введите пароль"
+            required
+          />
+        </div>
 
-        <form onSubmit={handleSubmit} className="auth-form">
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="Введите email"
-              required
-            />
-          </div>
+        <button type="submit" className="submit-btn" disabled={isLoading}>
+          {isLoading ? 'Вход...' : 'Войти'}
+        </button>
+      </form>
 
-          <div className="form-group">
-            <label htmlFor="password">Пароль</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              placeholder="Введите пароль"
-              required
-            />
-          </div>
-
-          <button type="submit" className="submit-btn" disabled={isLoading}>
-            {isLoading ? 'Вход...' : 'Войти'}
-          </button>
-        </form>
-
-        <p className="auth-link">
-          Нет аккаунта? <Link href="/register">Зарегистрироваться</Link>
-        </p>
-      </div>
+      <p className="auth-link">
+        Нет аккаунта? <Link href="/register">Зарегистрироваться</Link>
+      </p>
     </div>
   )
 }
