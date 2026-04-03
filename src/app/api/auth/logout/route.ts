@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server'
 
-export async function POST() {
-  const response = NextResponse.json({ message: 'Выход выполнен успешно' })
+function createLogoutResponse(isRedirect: boolean = false) {
+  const response = isRedirect
+    ? NextResponse.redirect(new URL('/', process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'))
+    : NextResponse.json({ message: 'Выход выполнен успешно' })
 
   response.cookies.set('payload-token', '', {
     httpOnly: true,
@@ -12,4 +14,12 @@ export async function POST() {
   })
 
   return response
+}
+
+export async function GET() {
+  return createLogoutResponse(true)
+}
+
+export async function POST() {
+  return createLogoutResponse(false)
 }

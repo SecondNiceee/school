@@ -34,7 +34,7 @@ export default async function LKPage() {
         <div className="lk-greeting">
           <h1>Приветствую, <span>{user.name || 'друг'}</span>!</h1>
         </div>
-        <Link href="/api/users/logout" className="lk-logout">
+        <Link href="/api/auth/logout" className="lk-logout">
           Выйти
         </Link>
       </header>
