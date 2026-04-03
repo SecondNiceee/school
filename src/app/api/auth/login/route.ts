@@ -30,6 +30,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'Неверный email или пароль' }, { status: 401 })
     }
 
+    console.log('[v0] Login successful, token generated for user:', result.user.email)
+    console.log('[v0] Token length:', result.token.length)
+
     const response = NextResponse.json({
       message: 'Вход выполнен успешно',
       user: {

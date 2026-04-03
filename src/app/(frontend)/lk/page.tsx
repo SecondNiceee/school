@@ -10,10 +10,18 @@ export default async function LKPage() {
   const headers = await getHeaders()
   const payloadConfig = await config
   const payload = await getPayload({ config: payloadConfig })
+  
+  // Debug: проверяем cookies
+  const cookieHeader = headers.get('cookie')
+  console.log('[v0] LK page - Cookie header:', cookieHeader)
+  console.log('[v0] LK page - Has payload-token:', cookieHeader?.includes('payload-token'))
+  
   const { user } = await payload.auth({ headers })
+  console.log('[v0] LK page - User from auth:', user ? user.email : 'null')
 
   if (!user) {
-    redirect('/')
+    console.log('[v0] LK page - No user, redirecting to login')
+    redirect('/login')
   }
 
   const materialsResponse = await payload.find({
