@@ -6,6 +6,9 @@ import Link from 'next/link'
 
 import config from '@/payload.config'
 
+// Принудительно динамический рендеринг - страница зависит от cookies
+export const dynamic = 'force-dynamic'
+
 export default async function LKPage() {
   const headers = await getHeaders()
   const payloadConfig = await config
