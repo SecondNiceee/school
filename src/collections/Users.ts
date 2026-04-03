@@ -48,13 +48,14 @@ export const Users: CollectionConfig = {
       name: 'role',
       type: 'select',
       options: [
-        { label: 'Пользователь', value: 'user' },
-        { label: 'Администратор', value: 'admin' },
+        { label: 'Ученик', value: 'user' },
       ],
       defaultValue: 'user',
       required: true,
       admin: {
         position: 'sidebar',
+        readOnly: true,
+        description: 'Все пользователи этой коллекции - ученики',
       },
     },
   ],
