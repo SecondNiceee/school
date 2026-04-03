@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import jwt from 'jsonwebtoken'
+import { SignJWT } from 'jose'
 
 type VerifyCodeBody = {
   email: string
@@ -75,15 +75,16 @@ export async function POST(req: NextRequest) {
 
     const tokenExpiration = 60 * 60 * 24 * 7 // 7 days
 
-    const token = jwt.sign(
-      {
-        id: user.id,
-        email: user.email,
-        collection: 'users',
-      },
-      secret,
-      { expiresIn: tokenExpiration },
-    )
+    const secretKey = new TextEncoder().encode(secret)
+    const token = await new SignJWT({
+      id: user.id,
+      email: user.email,
+      collection: 'users',
+    })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuedAt()
+      .setExpirationTime(`${tokenExpiration}s`)
+      .sign(secretKey)
 
     const response = NextResponse.json({
       message: 'Email успешно подтверждён!',
