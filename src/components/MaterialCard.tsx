@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { FileViewer } from './FileViewer'
 
 interface Material {
-  id: string
+  id: string | number
   title: string
   description?: string | null
   fileName?: string | null
