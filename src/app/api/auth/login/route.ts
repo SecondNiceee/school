@@ -30,9 +30,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'Неверный email или пароль' }, { status: 401 })
     }
 
-    console.log('[v0] Login successful, token generated for user:', result.user.email)
-    console.log('[v0] Token length:', result.token.length)
-
     const response = NextResponse.json({
       message: 'Вход выполнен успешно',
       user: {
@@ -44,9 +41,13 @@ export async function POST(req: NextRequest) {
 
     // Set HTTP-only cookie with the token
     // Важно: sameSite: 'lax' позволяет cookie отправляться при навигации
-    // secure: false в dev, чтобы работало на localhost
+    // secure: true в production (HTTPS), false в dev (HTTP)
+    // domain не указываем - cookie будет работать для текущего домена
     const isProduction = process.env.NODE_ENV === 'production'
-    response.cookies.set('payload-token', result.token, {
+    
+    response.cookies.set({
+      name: 'payload-token',
+      value: result.token,
       httpOnly: true,
       secure: isProduction,
       sameSite: 'lax',
