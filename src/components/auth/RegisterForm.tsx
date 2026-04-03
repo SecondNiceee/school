@@ -9,6 +9,7 @@ export function RegisterForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
+  const [isVerified, setIsVerified] = useState(false)
   const [step, setStep] = useState<'register' | 'verify'>('register')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -71,6 +72,7 @@ export function RegisterForm() {
       }
 
       // Шаг 2: Автоматический вход после успешной верификации
+      setIsVerified(true)
       setSuccess('Email подтвержден! Выполняем вход...')
       
       const loginResponse = await fetch('/api/auth/login', {
@@ -125,93 +127,113 @@ export function RegisterForm() {
   return (
     <div className="auth-form-container">
       <h1>{step === 'register' ? 'Регистрация' : 'Подтверждение'}</h1>
-
-      {error && <div className="message error">{error}</div>}
-      {success && <div className="message success">{success}</div>}
-
-      {step === 'register' && (
-        <form onSubmit={handleRegister} className="auth-form">
-          <div className="form-group">
-            <label htmlFor="name">Имя</label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              placeholder="Введите ваше имя"
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="Введите email"
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="password">Пароль</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              placeholder="Минимум 8 символов"
-              minLength={8}
-              required
-            />
-          </div>
-
-          <button type="submit" className="submit-btn" disabled={isLoading}>
-            {isLoading ? 'Регистрация...' : 'Зарегистрироваться'}
-          </button>
-        </form>
-      )}
-
-      {step === 'verify' && !success && (
-        <form onSubmit={handleVerify} className="auth-form">
-          <p className="verify-info">
-            Мы отправили 3-значный код на <strong>{email}</strong>
-          </p>
-
-          <div className="form-group">
-            <label htmlFor="code">Код подтверждения</label>
-            <input
-              type="text"
-              id="code"
-              name="code"
-              placeholder="000"
-              maxLength={3}
-              pattern="[0-9]{3}"
-              value={code}
-              onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
-              className="code-input"
-              required
-              autoFocus
-            />
-          </div>
-
-          <button type="submit" className="submit-btn" disabled={isLoading || code.length !== 3}>
-            {isLoading ? 'Проверка...' : 'Подтвердить'}
-          </button>
-
-          <button
-            type="button"
-            className="resend-btn"
-            onClick={handleResendCode}
-            disabled={isLoading}
-          >
-            Отправить код повторно
-          </button>
-        </form>
-      )}
-
-      <p className="auth-link">
-        Уже есть аккаунт? <Link href="/login">Войти</Link>
+      <p className="auth-subtitle">
+        {step === 'register' ? 'Создайте новый аккаунт' : 'Введите код из письма'}
       </p>
+
+      <div className="auth-card">
+        {error && <div className="message error">{error}</div>}
+        {success && !isVerified && <div className="message success">{success}</div>}
+
+        {step === 'register' && (
+          <form onSubmit={handleRegister} className="auth-form">
+            <div className="form-group">
+              <label htmlFor="name">Имя</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Введите ваше имя"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Введите email"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="password">Пароль</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Минимум 8 символов"
+                minLength={8}
+                required
+              />
+            </div>
+
+            <button type="submit" className="submit-btn" disabled={isLoading}>
+              {isLoading ? 'Регистрация...' : 'Зарегистрироваться'}
+            </button>
+          </form>
+        )}
+
+        {step === 'verify' && !isVerified && (
+          <form onSubmit={handleVerify} className="auth-form">
+            <p className="verify-info">
+              Мы отправили 3-значный код на <strong>{email}</strong>
+            </p>
+
+            <div className="form-group">
+              <label htmlFor="code">Код подтверждения</label>
+              <input
+                type="text"
+                id="code"
+                name="code"
+                placeholder="000"
+                maxLength={3}
+                pattern="[0-9]{3}"
+                value={code}
+                onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
+                className="code-input"
+                required
+                autoFocus
+              />
+            </div>
+
+            <button type="submit" className="submit-btn" disabled={isLoading || code.length !== 3}>
+              {isLoading ? 'Проверка...' : 'Подтвердить'}
+            </button>
+
+            <button
+              type="button"
+              className="resend-btn"
+              onClick={handleResendCode}
+              disabled={isLoading}
+            >
+              Отправить код повторно
+            </button>
+          </form>
+        )}
+
+        {step === 'verify' && isVerified && (
+          <div className="verify-success-state">
+            <div className="success-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M8 12l2.5 2.5L16 9" />
+              </svg>
+            </div>
+            <div className="message success">{success}</div>
+            <p className="verify-redirect-hint">Перенаправление в личный кабинет...</p>
+          </div>
+        )}
+
+        {!isVerified && (
+          <p className="auth-link">
+            Уже есть аккаунт? <Link href="/login">Войти</Link>
+          </p>
+        )}
+      </div>
     </div>
   )
 }
