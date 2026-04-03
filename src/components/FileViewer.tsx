@@ -16,7 +16,6 @@ export function FileViewer({ fileUrl, fileName, onClose }: FileViewerProps) {
   
   // Определяем тип файла
   const isOfficeFile = ['ppt', 'pptx', 'doc', 'docx', 'xls', 'xlsx'].includes(ext)
-  const isPdf = ext === 'pdf'
   const isImage = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(ext)
   const isVideo = ['mp4', 'webm', 'mov'].includes(ext)
   const isAudio = ['mp3', 'wav', 'ogg', 'flac'].includes(ext)
@@ -70,7 +69,7 @@ export function FileViewer({ fileUrl, fileName, onClose }: FileViewerProps) {
             </div>
           )}
           
-          {(isOfficeFile || isPdf) && !error && (
+          {isOfficeFile && !error && (
             <iframe
               src={getViewerUrl()}
               className="file-viewer-iframe"
@@ -114,7 +113,7 @@ export function FileViewer({ fileUrl, fileName, onClose }: FileViewerProps) {
             </div>
           )}
           
-          {!isOfficeFile && !isPdf && !isImage && !isVideo && !isAudio && (
+          {!isOfficeFile && !isImage && !isVideo && !isAudio && (
             <div className="file-viewer-unsupported">
               <p>Предпросмотр недоступен для этого типа файла</p>
               <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="file-viewer-fallback">
