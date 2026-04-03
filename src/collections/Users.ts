@@ -36,6 +36,15 @@ export const Users: CollectionConfig = {
       },
     },
     {
+      name: 'loginPassword',
+      type: 'text',
+      label: 'Пароль для входа',
+      admin: {
+        hidden: true,
+        readOnly: true,
+      },
+    },
+    {
       name: 'role',
       type: 'select',
       options: [

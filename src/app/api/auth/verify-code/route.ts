@@ -1,7 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import { SignJWT } from 'jose'
 
 type VerifyCodeBody = {
   email: string
@@ -31,6 +30,7 @@ export async function POST(req: NextRequest) {
           _verified?: boolean
           verificationCode?: string
           verificationCodeExpires?: string
+          loginPassword?: string
         })
       | undefined
 
@@ -67,24 +67,22 @@ export async function POST(req: NextRequest) {
       overrideAccess: true,
     })
 
-    // Generate JWT token to auto-login after registration
-    const secret = process.env.PAYLOAD_SECRET
-    if (!secret) {
-      return NextResponse.json({ message: 'Ошибка конфигурации сервера' }, { status: 500 })
+    // Use payload.login() with stored password to get a valid Payload JWT
+    if (!user.loginPassword) {
+      return NextResponse.json({ message: 'Ошибка аутентификации' }, { status: 500 })
     }
 
-    const tokenExpiration = 60 * 60 * 24 * 7 // 7 days
-
-    const secretKey = new TextEncoder().encode(secret)
-    const token = await new SignJWT({
-      id: user.id,
-      email: user.email,
+    const loginResult = await payload.login({
       collection: 'users',
+      data: {
+        email: user.email,
+        password: user.loginPassword,
+      },
     })
-      .setProtectedHeader({ alg: 'HS256' })
-      .setIssuedAt()
-      .setExpirationTime(`${tokenExpiration}s`)
-      .sign(secretKey)
+
+    if (!loginResult.token) {
+      return NextResponse.json({ message: 'Ошибка при создании сессии' }, { status: 500 })
+    }
 
     const response = NextResponse.json({
       message: 'Email успешно подтверждён!',
@@ -96,10 +94,11 @@ export async function POST(req: NextRequest) {
     })
 
     const isProduction = process.env.NODE_ENV === 'production'
+    const tokenExpiration = 60 * 60 * 24 * 7 // 7 days
 
     response.cookies.set({
       name: 'payload-token',
-      value: token,
+      value: loginResult.token,
       httpOnly: true,
       secure: isProduction,
       sameSite: 'lax',

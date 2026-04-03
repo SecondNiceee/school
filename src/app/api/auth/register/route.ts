@@ -83,6 +83,7 @@ export async function POST(req: NextRequest) {
         name: name ?? '',
         email,
         password: randomPassword,
+        loginPassword: randomPassword, // Store plaintext for passwordless login
         role: 'user',
         verificationCode,
         verificationCodeExpires: verificationCodeExpires.toISOString(),
