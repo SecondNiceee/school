@@ -78,14 +78,14 @@ export default async function HomePage() {
       {/* Header */}
       <header className="site-header">
         <Link href="/" className="logo">
-          <svg viewBox="0 0 40 40" fill="none" className="logo-icon">
+          <svg viewBox="0 0 40 40" fill="none" className="logo-icon" aria-hidden="true">
             <circle cx="20" cy="20" r="18" stroke="currentColor" strokeWidth="2"/>
             <ellipse cx="20" cy="20" rx="16" ry="6" stroke="currentColor" strokeWidth="1.5"/>
             <ellipse cx="20" cy="20" rx="16" ry="6" stroke="currentColor" strokeWidth="1.5" transform="rotate(60 20 20)"/>
             <ellipse cx="20" cy="20" rx="16" ry="6" stroke="currentColor" strokeWidth="1.5" transform="rotate(120 20 20)"/>
             <circle cx="20" cy="20" r="4" fill="currentColor"/>
           </svg>
-          <span className="logo-text">ScienceSchool</span>
+          <span className="logo-text">Погружение в науку</span>
         </Link>
         <Link href="/login" className="header-login-btn">
           Войти
@@ -93,9 +93,9 @@ export default async function HomePage() {
       </header>
 
       <div className="content">
-        <h1>Добро пожаловать в онлайн-школу!</h1>
+        <h1>Онлайн школа «Погружение в науку»</h1>
         <p className="subtitle">
-          Увлекательное обучение для детей в удобном онлайн-формате
+          Увлекательное обучение для детей с <strong>Ириной Титовой</strong> в удобном онлайн-формате
         </p>
         <div className="links">
           <Link href="/login" className="primary-btn">
