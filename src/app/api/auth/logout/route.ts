@@ -5,7 +5,7 @@ function createLogoutResponse(isRedirect: boolean = false) {
     ? NextResponse.redirect(new URL('/', process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'))
     : NextResponse.json({ message: 'Выход выполнен успешно' })
 
-  response.cookies.set('payload-token', '', {
+  response.cookies.set('user-token', '', {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
