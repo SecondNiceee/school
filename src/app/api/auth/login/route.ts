@@ -26,18 +26,17 @@ export async function POST(req: NextRequest) {
       collection: 'users',
       where: { email: { equals: email } },
       limit: 1,
-      showHiddenFields: true,
     })
 
     const user = existing.docs[0] as
-      | (typeof existing.docs[0] & { _verified?: boolean; name?: string })
+      | (typeof existing.docs[0] & { verified?: boolean; name?: string })
       | undefined
 
     if (!user) {
       return NextResponse.json({ message: 'Пользователь с таким email не найден' }, { status: 404 })
     }
 
-    if (!user._verified) {
+    if (!user.verified) {
       return NextResponse.json(
         { message: 'Email не подтверждён. Пройдите регистрацию.' },
         { status: 403 },
@@ -55,7 +54,6 @@ export async function POST(req: NextRequest) {
         verificationCode,
         verificationCodeExpires: verificationCodeExpires.toISOString(),
       },
-      overrideAccess: true,
     })
 
     await sendVerificationCodeEmail({

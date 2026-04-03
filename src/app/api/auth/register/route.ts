@@ -27,15 +27,14 @@ export async function POST(req: NextRequest) {
       collection: 'users',
       where: { email: { equals: email } },
       limit: 1,
-      showHiddenFields: true,
     })
 
     const candidate = existing.docs[0] as
-      | (typeof existing.docs[0] & { _verified?: boolean })
+      | (typeof existing.docs[0] & { verified?: boolean })
       | undefined
 
     if (candidate) {
-      if (candidate._verified) {
+      if (candidate.verified) {
         return NextResponse.json(
           { message: 'Пользователь с таким email уже существует' },
           { status: 409 },
@@ -54,7 +53,6 @@ export async function POST(req: NextRequest) {
           verificationCode,
           verificationCodeExpires: verificationCodeExpires.toISOString(),
         },
-        overrideAccess: true,
       })
 
       await sendVerificationCodeEmail({
@@ -70,25 +68,20 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Create new user without password (passwordless)
+    // Create new user (no password needed!)
     const verificationCode = generateVerificationCode()
     const verificationCodeExpires = new Date(Date.now() + 10 * 60 * 1000)
-
-    // Payload requires a password field even for passwordless — use a random one
-    const randomPassword = `PL_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`
 
     await payload.create({
       collection: 'users',
       data: {
         name: name ?? '',
         email,
-        password: randomPassword,
-        loginPassword: randomPassword, // Store plaintext for passwordless login
         role: 'user',
+        verified: false,
         verificationCode,
         verificationCodeExpires: verificationCodeExpires.toISOString(),
       },
-      disableVerificationEmail: true,
     })
 
     await sendVerificationCodeEmail({

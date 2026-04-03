@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import { createToken, getTokenCookieOptions } from '@/utils/auth'
 
 type VerifyCodeBody = {
   email: string
@@ -22,15 +23,13 @@ export async function POST(req: NextRequest) {
       collection: 'users',
       where: { email: { equals: email } },
       limit: 1,
-      showHiddenFields: true,
     })
 
     const user = existing.docs[0] as
       | (typeof existing.docs[0] & {
-          _verified?: boolean
+          verified?: boolean
           verificationCode?: string
           verificationCodeExpires?: string
-          loginPassword?: string
         })
       | undefined
 
@@ -38,7 +37,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'Пользователь не найден' }, { status: 404 })
     }
 
-    if (user._verified) {
+    if (user.verified) {
       return NextResponse.json({ message: 'Email уже подтвержден' }, { status: 400 })
     }
 
@@ -60,29 +59,17 @@ export async function POST(req: NextRequest) {
       collection: 'users',
       id: user.id,
       data: {
-        _verified: true,
+        verified: true,
         verificationCode: null,
         verificationCodeExpires: null,
       },
-      overrideAccess: true,
     })
 
-    // Use payload.login() with stored password to get a valid Payload JWT
-    if (!user.loginPassword) {
-      return NextResponse.json({ message: 'Ошибка аутентификации' }, { status: 500 })
-    }
-
-    const loginResult = await payload.login({
-      collection: 'users',
-      data: {
-        email: user.email,
-        password: user.loginPassword,
-      },
+    // Create JWT token
+    const token = await createToken({
+      id: String(user.id),
+      email: user.email as string,
     })
-
-    if (!loginResult.token) {
-      return NextResponse.json({ message: 'Ошибка при создании сессии' }, { status: 500 })
-    }
 
     const response = NextResponse.json({
       message: 'Email успешно подтверждён!',
@@ -94,16 +81,11 @@ export async function POST(req: NextRequest) {
     })
 
     const isProduction = process.env.NODE_ENV === 'production'
-    const tokenExpiration = 60 * 60 * 24 * 7 // 7 days
+    const cookieOptions = getTokenCookieOptions(isProduction)
 
     response.cookies.set({
-      name: 'payload-token',
-      value: loginResult.token,
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: 'lax',
-      path: '/',
-      maxAge: tokenExpiration,
+      ...cookieOptions,
+      value: token,
     })
 
     return response

@@ -5,19 +5,28 @@ export const Users: CollectionConfig = {
   admin: {
     useAsTitle: 'email',
   },
-  auth: {
-    // verify: true включает поле _verified в коллекции
-    // Автоматическую отправку письма отключаем через disableVerificationEmail в payload.create()
-    // Наша верификация по коду реализована в /api/auth/register и /api/auth/verify-code
-    verify: true,
-    // Срок действия токена - 7 дней (в секундах)
-    tokenExpiration: 60 * 60 * 24 * 7,
-  },
+  // Без auth - полностью кастомная passwordless авторизация
   fields: [
+    {
+      name: 'email',
+      type: 'email',
+      label: 'Email',
+      required: true,
+      unique: true,
+    },
     {
       name: 'name',
       type: 'text',
       label: 'Имя',
+    },
+    {
+      name: 'verified',
+      type: 'checkbox',
+      label: 'Подтверждён',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+      },
     },
     {
       name: 'verificationCode',
@@ -33,15 +42,6 @@ export const Users: CollectionConfig = {
       label: 'Срок действия кода',
       admin: {
         hidden: true,
-      },
-    },
-    {
-      name: 'loginPassword',
-      type: 'text',
-      label: 'Пароль для входа',
-      admin: {
-        hidden: true,
-        readOnly: true,
       },
     },
     {
