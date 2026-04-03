@@ -43,41 +43,44 @@ export function LoginForm() {
 
   return (
     <div className="auth-form-container">
-      <h1>Вход</h1>
+      <h1>Войти</h1>
+      <p className="auth-subtitle">Войдите в свой аккаунт</p>
 
-      {error && <div className="message error">{error}</div>}
+      <div className="auth-card">
+        {error && <div className="message error">{error}</div>}
 
-      <form onSubmit={handleSubmit} className="auth-form">
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            placeholder="Введите email"
-            required
-          />
-        </div>
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Введите email"
+              required
+            />
+          </div>
 
-        <div className="form-group">
-          <label htmlFor="password">Пароль</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            placeholder="Введите пароль"
-            required
-          />
-        </div>
+          <div className="form-group">
+            <label htmlFor="password">Пароль</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Введите пароль"
+              required
+            />
+          </div>
 
-        <button type="submit" className="submit-btn" disabled={isLoading}>
-          {isLoading ? 'Вход...' : 'Войти'}
-        </button>
-      </form>
+          <button type="submit" className="submit-btn" disabled={isLoading}>
+            {isLoading ? 'Вход...' : 'Войти'}
+          </button>
+        </form>
 
-      <p className="auth-link">
-        Нет аккаунта? <Link href="/register">Зарегистрироваться</Link>
-      </p>
+        <p className="auth-link">
+          Нет аккаунта? <Link href="/register">Зарегистрироваться</Link>
+        </p>
+      </div>
     </div>
   )
 }
