@@ -8,7 +8,7 @@ const authRoutes = ['/login', '/register', '/verify-email']
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
-  const token = request.cookies.get('payload-token')?.value
+  const token = request.cookies.get('user-token')?.value
 
   // Проверяем защищенные маршруты
   const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route))

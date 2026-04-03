@@ -15,7 +15,7 @@ export const revalidate = 0
 
 export default async function LKPage() {
   const cookieStore = await cookies()
-  const token = cookieStore.get('payload-token')?.value
+  const token = cookieStore.get('user-token')?.value
 
   if (!token) {
     redirect('/login')

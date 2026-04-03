@@ -32,9 +32,11 @@ export async function verifyToken(token: string): Promise<TokenPayload | null> {
   }
 }
 
+export const USER_TOKEN_COOKIE = 'user-token'
+
 export function getTokenCookieOptions(isProduction: boolean) {
   return {
-    name: 'payload-token',
+    name: USER_TOKEN_COOKIE,
     httpOnly: true,
     secure: isProduction,
     sameSite: 'lax' as const,
