@@ -1,11 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 export function LoginForm() {
-  const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -27,19 +25,15 @@ export function LoginForm() {
       })
 
       const data = await response.json()
-      console.log('[v0] Login response:', data)
-      console.log('[v0] Response cookies:', document.cookie)
 
       if (!response.ok) {
         setError(data.message || 'Ошибка при входе')
         return
       }
 
-      // Даем время на установку cookie перед переходом
-      await new Promise(resolve => setTimeout(resolve, 100))
-      
-      router.push('/lk')
-      router.refresh()
+      // Используем полную перезагрузку страницы для надежной установки cookie
+      // Это гарантирует что браузер правильно применит Set-Cookie header
+      window.location.href = '/lk'
     } catch {
       setError('Произошла ошибка. Попробуйте позже.')
     } finally {

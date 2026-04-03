@@ -1,4 +1,4 @@
-import { headers as getHeaders } from 'next/headers.js'
+import { cookies } from 'next/headers'
 import { getPayload } from 'payload'
 import { redirect } from 'next/navigation'
 import React from 'react'
@@ -8,22 +8,28 @@ import config from '@/payload.config'
 
 // Принудительно динамический рендеринг - страница зависит от cookies
 export const dynamic = 'force-dynamic'
+// Отключаем кэширование данных
+export const revalidate = 0
 
 export default async function LKPage() {
-  const headers = await getHeaders()
+  const cookieStore = await cookies()
   const payloadConfig = await config
   const payload = await getPayload({ config: payloadConfig })
   
-  // Debug: проверяем cookies
-  const cookieHeader = headers.get('cookie')
-  console.log('[v0] LK page - Cookie header:', cookieHeader)
-  console.log('[v0] LK page - Has payload-token:', cookieHeader?.includes('payload-token'))
+  // Создаем headers объект из cookies для payload.auth()
+  const token = cookieStore.get('payload-token')?.value
+  
+  if (!token) {
+    redirect('/login')
+  }
+  
+  // Создаем Headers объект для payload.auth()
+  const headers = new Headers()
+  headers.set('cookie', `payload-token=${token}`)
   
   const { user } = await payload.auth({ headers })
-  console.log('[v0] LK page - User from auth:', user ? user.email : 'null')
 
   if (!user) {
-    console.log('[v0] LK page - No user, redirecting to login')
     redirect('/login')
   }
 
