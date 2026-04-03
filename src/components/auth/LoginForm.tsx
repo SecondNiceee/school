@@ -23,15 +23,21 @@ export function LoginForm() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
+        credentials: 'include', // Важно для работы с cookies
       })
 
       const data = await response.json()
+      console.log('[v0] Login response:', data)
+      console.log('[v0] Response cookies:', document.cookie)
 
       if (!response.ok) {
         setError(data.message || 'Ошибка при входе')
         return
       }
 
+      // Даем время на установку cookie перед переходом
+      await new Promise(resolve => setTimeout(resolve, 100))
+      
       router.push('/lk')
       router.refresh()
     } catch {
