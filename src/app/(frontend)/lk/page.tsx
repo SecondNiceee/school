@@ -2,9 +2,9 @@ import { cookies } from 'next/headers'
 import { getPayload } from 'payload'
 import { redirect } from 'next/navigation'
 import React from 'react'
-import Link from 'next/link'
 
 import config from '@/payload.config'
+import { LogoutButton } from '@/components/auth/LogoutButton'
 
 // Принудительно динамический рендеринг - страница зависит от cookies
 export const dynamic = 'force-dynamic'
@@ -51,9 +51,7 @@ export default async function LKPage() {
         <div className="lk-greeting">
           <h1>Приветствую, <span>{user.name || 'друг'}</span>!</h1>
         </div>
-        <Link href="/api/auth/logout" className="lk-logout">
-          Выйти
-        </Link>
+        <LogoutButton />
       </header>
 
       <div className="lk-content">
