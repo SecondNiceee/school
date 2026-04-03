@@ -6,7 +6,6 @@ import { sendVerificationCodeEmail } from '@/utils/sendVerificationCodeEmail'
 type RegisterBody = {
   name?: string
   email: string
-  password: string
 }
 
 function generateVerificationCode(): string {
@@ -16,17 +15,10 @@ function generateVerificationCode(): string {
 export async function POST(req: NextRequest) {
   try {
     const body = (await req.json()) as RegisterBody
-    const { name, email, password } = body
+    const { name, email } = body
 
-    if (!email || !password) {
-      return NextResponse.json({ message: 'Email и пароль обязательны' }, { status: 400 })
-    }
-
-    if (password.length < 8) {
-      return NextResponse.json(
-        { message: 'Пароль должен быть не менее 8 символов' },
-        { status: 400 },
-      )
+    if (!email) {
+      return NextResponse.json({ message: 'Email обязателен' }, { status: 400 })
     }
 
     const payload = await getPayload({ config })
@@ -52,7 +44,7 @@ export async function POST(req: NextRequest) {
 
       // User exists but not verified — generate new code and resend
       const verificationCode = generateVerificationCode()
-      const verificationCodeExpires = new Date(Date.now() + 10 * 60 * 1000) // 10 minutes
+      const verificationCodeExpires = new Date(Date.now() + 10 * 60 * 1000)
 
       await payload.update({
         collection: 'users',
@@ -69,7 +61,7 @@ export async function POST(req: NextRequest) {
         payload,
         email,
         code: verificationCode,
-        name: name ?? candidate.name as string,
+        name: name ?? (candidate.name as string),
       })
 
       return NextResponse.json(
@@ -78,22 +70,24 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Create new user with verification code
+    // Create new user without password (passwordless)
     const verificationCode = generateVerificationCode()
-    const verificationCodeExpires = new Date(Date.now() + 10 * 60 * 1000) // 10 minutes
+    const verificationCodeExpires = new Date(Date.now() + 10 * 60 * 1000)
+
+    // Payload requires a password field even for passwordless — use a random one
+    const randomPassword = `PL_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`
 
     await payload.create({
-
       collection: 'users',
       data: {
         name: name ?? '',
         email,
-        password,
+        password: randomPassword,
         role: 'user',
         verificationCode,
         verificationCodeExpires: verificationCodeExpires.toISOString(),
       },
-      disableVerificationEmail: true, // Отключаем письмо от Payload - используем свою систему с кодом
+      disableVerificationEmail: true,
     })
 
     await sendVerificationCodeEmail({

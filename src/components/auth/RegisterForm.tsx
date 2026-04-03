@@ -1,18 +1,15 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 export function RegisterForm() {
-  const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
   const [isVerified, setIsVerified] = useState(false)
   const [step, setStep] = useState<'register' | 'verify'>('register')
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [code, setCode] = useState('')
 
   async function handleRegister(e: React.FormEvent<HTMLFormElement>) {
@@ -23,13 +20,12 @@ export function RegisterForm() {
     const formData = new FormData(e.currentTarget)
     const name = formData.get('name') as string
     const emailValue = formData.get('email') as string
-    const password = formData.get('password') as string
 
     try {
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email: emailValue, password }),
+        body: JSON.stringify({ name, email: emailValue }),
       })
 
       const data = await response.json()
@@ -39,11 +35,8 @@ export function RegisterForm() {
         return
       }
 
-      if (data.requiresVerification) {
-        setEmail(emailValue)
-        setPassword(password) // Сохраняем пароль для автоматического логина после верификации
-        setStep('verify')
-      }
+      setEmail(emailValue)
+      setStep('verify')
     } catch {
       setError('Произошла ошибка. Попробуйте позже.')
     } finally {
@@ -57,39 +50,24 @@ export function RegisterForm() {
     setError(null)
 
     try {
-      // Шаг 1: Верификация кода
-      const verifyResponse = await fetch('/api/auth/verify-code', {
+      const response = await fetch('/api/auth/verify-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, code }),
+        credentials: 'include',
       })
 
-      const verifyData = await verifyResponse.json()
+      const data = await response.json()
 
-      if (!verifyResponse.ok) {
-        setError(verifyData.message || 'Ошибка при проверке кода')
+      if (!response.ok) {
+        setError(data.message || 'Ошибка при проверке кода')
         return
       }
 
-      // Шаг 2: Автоматический вход после успешной верификации
+      // Token is set via cookie — redirect to lk
       setIsVerified(true)
-      setSuccess('Email подтвержден! Выполняем вход...')
-      
-      const loginResponse = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      })
-
-      if (loginResponse.ok) {
-        // Успешный вход - перенаправляем в личный кабинет
-        router.push('/lk')
-        router.refresh() // Обновляем данные сессии
-      } else {
-        // Если автоматический вход не удался, отправляем на страницу логина
-        setSuccess('Email подтвержден! Перенаправление на страницу входа...')
-        setTimeout(() => router.push('/login'), 1500)
-      }
+      setSuccess('Email подтверждён! Перенаправление...')
+      window.location.href = '/lk'
     } catch {
       setError('Произошла ошибка. Попробуйте позже.')
     } finally {
@@ -105,13 +83,13 @@ export function RegisterForm() {
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password: 'resend-placeholder' }),
+        body: JSON.stringify({ email }),
       })
 
       const data = await response.json()
 
       if (response.ok) {
-        setError(null)
+        setCode('')
         setSuccess('Новый код отправлен!')
         setTimeout(() => setSuccess(null), 3000)
       } else {
@@ -145,6 +123,7 @@ export function RegisterForm() {
                 name="name"
                 placeholder="Введите ваше имя"
                 required
+                autoFocus
               />
             </div>
 
@@ -155,18 +134,6 @@ export function RegisterForm() {
                 id="email"
                 name="email"
                 placeholder="Введите email"
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="password">Пароль</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Минимум 8 символов"
-                minLength={8}
                 required
               />
             </div>
@@ -200,7 +167,11 @@ export function RegisterForm() {
               />
             </div>
 
-            <button type="submit" className="submit-btn" disabled={isLoading || code.length !== 3}>
+            <button
+              type="submit"
+              className="submit-btn"
+              disabled={isLoading || code.length !== 3}
+            >
               {isLoading ? 'Проверка...' : 'Подтвердить'}
             </button>
 

@@ -1,73 +1,76 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import { sendVerificationCodeEmail } from '@/utils/sendVerificationCodeEmail'
 
 type LoginBody = {
   email: string
-  password: string
+}
+
+function generateVerificationCode(): string {
+  return Math.floor(100 + Math.random() * 900).toString()
 }
 
 export async function POST(req: NextRequest) {
   try {
     const body = (await req.json()) as LoginBody
-    const { email, password } = body
+    const { email } = body
 
-    if (!email || !password) {
-      return NextResponse.json({ message: 'Email и пароль обязательны' }, { status: 400 })
+    if (!email) {
+      return NextResponse.json({ message: 'Email обязателен' }, { status: 400 })
     }
 
     const payload = await getPayload({ config })
 
-    const result = await payload.login({
+    const existing = await payload.find({
       collection: 'users',
-      data: {
-        email,
-        password,
-      },
+      where: { email: { equals: email } },
+      limit: 1,
+      showHiddenFields: true,
     })
 
-    if (!result.token || !result.user) {
-      return NextResponse.json({ message: 'Неверный email или пароль' }, { status: 401 })
+    const user = existing.docs[0] as
+      | (typeof existing.docs[0] & { _verified?: boolean; name?: string })
+      | undefined
+
+    if (!user) {
+      return NextResponse.json({ message: 'Пользователь с таким email не найден' }, { status: 404 })
     }
 
-    const response = NextResponse.json({
-      message: 'Вход выполнен успешно',
-      user: {
-        id: result.user.id,
-        email: result.user.email,
-        name: result.user.name,
-      },
-    })
-
-    // Set HTTP-only cookie with the token
-    // Важно: sameSite: 'lax' позволяет cookie отправляться при навигации
-    // secure: true в production (HTTPS), false в dev (HTTP)
-    // domain не указываем - cookie будет работать для текущего домена
-    const isProduction = process.env.NODE_ENV === 'production'
-    
-    response.cookies.set({
-      name: 'payload-token',
-      value: result.token,
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 60 * 60 * 24 * 7, // 7 days (должен совпадать с tokenExpiration в Users collection)
-    })
-
-    return response
-  } catch (error: unknown) {
-    console.error('[login] Error:', error)
-
-    // Check if it's a verification error
-    const errorMessage = error instanceof Error ? error.message : ''
-    if (errorMessage.includes('verify') || errorMessage.includes('verified')) {
+    if (!user._verified) {
       return NextResponse.json(
-        { message: 'Пожалуйста, подтвердите ваш email перед входом' },
+        { message: 'Email не подтверждён. Пройдите регистрацию.' },
         { status: 403 },
       )
     }
 
-    return NextResponse.json({ message: 'Неверный email или пароль' }, { status: 401 })
+    // Generate and save login code
+    const verificationCode = generateVerificationCode()
+    const verificationCodeExpires = new Date(Date.now() + 10 * 60 * 1000) // 10 minutes
+
+    await payload.update({
+      collection: 'users',
+      id: user.id,
+      data: {
+        verificationCode,
+        verificationCodeExpires: verificationCodeExpires.toISOString(),
+      },
+      overrideAccess: true,
+    })
+
+    await sendVerificationCodeEmail({
+      payload,
+      email,
+      code: verificationCode,
+      name: user.name ?? '',
+    })
+
+    return NextResponse.json(
+      { message: 'Код отправлен на вашу почту.', requiresCode: true },
+      { status: 200 },
+    )
+  } catch (error: unknown) {
+    console.error('[login] Error:', error)
+    return NextResponse.json({ message: 'Произошла ошибка. Попробуйте позже.' }, { status: 500 })
   }
 }

@@ -883,6 +883,28 @@ svg {
   }
 }
 
+.back-btn {
+  padding: 10px 24px;
+  font-size: 13px;
+  color: var(--color-text-light);
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.2s;
+
+  &:hover:not(:disabled) {
+    color: var(--color-primary);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
 /* Verify Email Page */
 .verify-page {
   display: flex;
