@@ -3,14 +3,14 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import jwt from 'jsonwebtoken'
 
-type VerifyCodeBody = {
+type LoginVerifyBody = {
   email: string
   code: string
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const body = (await req.json()) as VerifyCodeBody
+    const body = (await req.json()) as LoginVerifyBody
     const { email, code } = body
 
     if (!email || !code) {
@@ -38,12 +38,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'Пользователь не найден' }, { status: 404 })
     }
 
-    if (user._verified) {
-      return NextResponse.json({ message: 'Email уже подтвержден' }, { status: 400 })
-    }
-
     if (!user.verificationCode || !user.verificationCodeExpires) {
-      return NextResponse.json({ message: 'Код верификации не найден' }, { status: 400 })
+      return NextResponse.json({ message: 'Код не найден. Запросите новый.' }, { status: 400 })
     }
 
     const codeExpires = new Date(user.verificationCodeExpires)
@@ -55,25 +51,24 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'Неверный код' }, { status: 400 })
     }
 
-    // Verify user and clear code
+    // Clear the code
     await payload.update({
       collection: 'users',
       id: user.id,
       data: {
-        _verified: true,
         verificationCode: null,
         verificationCodeExpires: null,
       },
       overrideAccess: true,
     })
 
-    // Generate JWT token to auto-login after registration
+    // Generate JWT token manually using Payload's secret
     const secret = process.env.PAYLOAD_SECRET
     if (!secret) {
       return NextResponse.json({ message: 'Ошибка конфигурации сервера' }, { status: 500 })
     }
 
-    const tokenExpiration = 60 * 60 * 24 * 7 // 7 days
+    const tokenExpiration = 60 * 60 * 24 * 7 // 7 days in seconds
 
     const token = jwt.sign(
       {
@@ -86,7 +81,7 @@ export async function POST(req: NextRequest) {
     )
 
     const response = NextResponse.json({
-      message: 'Email успешно подтверждён!',
+      message: 'Вход выполнен успешно',
       user: {
         id: user.id,
         email: user.email,
@@ -108,7 +103,7 @@ export async function POST(req: NextRequest) {
 
     return response
   } catch (error: unknown) {
-    console.error('[verify-code] Error:', error)
+    console.error('[login-verify] Error:', error)
     return NextResponse.json({ message: 'Ошибка при проверке кода' }, { status: 500 })
   }
 }
