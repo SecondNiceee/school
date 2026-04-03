@@ -8,14 +8,22 @@ import config from '@/payload.config'
 import './styles.css'
 
 export default async function HomePage() {
-  const headers = await getHeaders()
-  const payloadConfig = await config
-  const payload = await getPayload({ config: payloadConfig })
-  const { user } = await payload.auth({ headers })
+  // Проверяем наличие необходимых переменных окружения
+  if (process.env.PAYLOAD_SECRET && process.env.DATABASE_URL) {
+    try {
+      const headers = await getHeaders()
+      const payloadConfig = await config
+      const payload = await getPayload({ config: payloadConfig })
+      const { user } = await payload.auth({ headers })
 
-  // Если пользователь залогинен - редирект в личный кабинет
-  if (user) {
-    redirect('/lk')
+      // Если пользователь залогинен - редирект в личный кабинет
+      if (user) {
+        redirect('/lk')
+      }
+    } catch (error) {
+      // Если ошибка при инициализации Payload, просто показываем главную страницу
+      console.log('[v0] Payload initialization error:', error)
+    }
   }
 
   return (
