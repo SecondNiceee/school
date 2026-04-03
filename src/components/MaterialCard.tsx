@@ -23,21 +23,25 @@ export function MaterialCard({ material }: MaterialCardProps) {
   const fileName = material.fileName || 'file'
   const ext = fileName.split('.').pop()?.toLowerCase() || ''
   
-  // Файлы, которые можно просмотреть в нашем viewer
+  // PDF и неподдерживаемые форматы — сразу в новую вкладку
+  const openInNewTab = [
+    'pdf',
+  ].includes(ext)
+
+  // Файлы, которые открываются в нашем viewer (только Office + медиа)
   const canPreview = [
     'ppt', 'pptx', 'doc', 'docx', 'xls', 'xlsx', // Office
-    'pdf', // PDF
     'jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', // Images
     'mp4', 'webm', 'mov', // Video
     'mp3', 'wav', 'ogg', 'flac', // Audio
   ].includes(ext)
 
   const handleOpen = () => {
-    if (canPreview) {
-      setIsViewerOpen(true)
+    if (openInNewTab || !canPreview) {
+      // PDF и остальные — открываем в новой вкладке на весь экран
+      window.open(material.fileUrl, '_blank', 'noopener,noreferrer')
     } else {
-      // Для остальных файлов - открываем в новой вкладке
-      window.open(material.fileUrl, '_blank')
+      setIsViewerOpen(true)
     }
   }
 
