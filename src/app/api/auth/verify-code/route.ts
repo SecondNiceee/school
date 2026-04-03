@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import { SignJWT } from 'jose'
+import { createToken, getTokenCookieOptions } from '@/utils/auth'
 
 type VerifyCodeBody = {
   email: string
@@ -23,12 +23,11 @@ export async function POST(req: NextRequest) {
       collection: 'users',
       where: { email: { equals: email } },
       limit: 1,
-      showHiddenFields: true,
     })
 
     const user = existing.docs[0] as
       | (typeof existing.docs[0] & {
-          _verified?: boolean
+          verified?: boolean
           verificationCode?: string
           verificationCodeExpires?: string
         })
@@ -38,7 +37,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'Пользователь не найден' }, { status: 404 })
     }
 
-    if (user._verified) {
+    if (user.verified) {
       return NextResponse.json({ message: 'Email уже подтвержден' }, { status: 400 })
     }
 
@@ -60,31 +59,17 @@ export async function POST(req: NextRequest) {
       collection: 'users',
       id: user.id,
       data: {
-        _verified: true,
+        verified: true,
         verificationCode: null,
         verificationCodeExpires: null,
       },
-      overrideAccess: true,
     })
 
-    // Generate JWT token to auto-login after registration
-    const secret = process.env.PAYLOAD_SECRET
-    if (!secret) {
-      return NextResponse.json({ message: 'Ошибка конфигурации сервера' }, { status: 500 })
-    }
-
-    const tokenExpiration = 60 * 60 * 24 * 7 // 7 days
-
-    const secretKey = new TextEncoder().encode(secret)
-    const token = await new SignJWT({
-      id: user.id,
-      email: user.email,
-      collection: 'users',
+    // Create JWT token
+    const token = await createToken({
+      id: String(user.id),
+      email: user.email as string,
     })
-      .setProtectedHeader({ alg: 'HS256' })
-      .setIssuedAt()
-      .setExpirationTime(`${tokenExpiration}s`)
-      .sign(secretKey)
 
     const response = NextResponse.json({
       message: 'Email успешно подтверждён!',
@@ -96,15 +81,11 @@ export async function POST(req: NextRequest) {
     })
 
     const isProduction = process.env.NODE_ENV === 'production'
+    const cookieOptions = getTokenCookieOptions(isProduction)
 
     response.cookies.set({
-      name: 'payload-token',
+      ...cookieOptions,
       value: token,
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: 'lax',
-      path: '/',
-      maxAge: tokenExpiration,
     })
 
     return response

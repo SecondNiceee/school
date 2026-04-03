@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import { SignJWT } from 'jose'
+import { createToken, getTokenCookieOptions } from '@/utils/auth'
 
 type LoginVerifyBody = {
   email: string
@@ -23,12 +23,11 @@ export async function POST(req: NextRequest) {
       collection: 'users',
       where: { email: { equals: email } },
       limit: 1,
-      showHiddenFields: true,
     })
 
     const user = existing.docs[0] as
       | (typeof existing.docs[0] & {
-          _verified?: boolean
+          verified?: boolean
           verificationCode?: string
           verificationCodeExpires?: string
         })
@@ -59,27 +58,13 @@ export async function POST(req: NextRequest) {
         verificationCode: null,
         verificationCodeExpires: null,
       },
-      overrideAccess: true,
     })
 
-    // Generate JWT token manually using Payload's secret
-    const secret = process.env.PAYLOAD_SECRET
-    if (!secret) {
-      return NextResponse.json({ message: 'Ошибка конфигурации сервера' }, { status: 500 })
-    }
-
-    const tokenExpiration = 60 * 60 * 24 * 7 // 7 days in seconds
-
-    const secretKey = new TextEncoder().encode(secret)
-    const token = await new SignJWT({
-      id: user.id,
-      email: user.email,
-      collection: 'users',
+    // Create JWT token
+    const token = await createToken({
+      id: String(user.id),
+      email: user.email as string,
     })
-      .setProtectedHeader({ alg: 'HS256' })
-      .setIssuedAt()
-      .setExpirationTime(`${tokenExpiration}s`)
-      .sign(secretKey)
 
     const response = NextResponse.json({
       message: 'Вход выполнен успешно',
@@ -91,15 +76,11 @@ export async function POST(req: NextRequest) {
     })
 
     const isProduction = process.env.NODE_ENV === 'production'
+    const cookieOptions = getTokenCookieOptions(isProduction)
 
     response.cookies.set({
-      name: 'payload-token',
+      ...cookieOptions,
       value: token,
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: 'lax',
-      path: '/',
-      maxAge: tokenExpiration,
     })
 
     return response
