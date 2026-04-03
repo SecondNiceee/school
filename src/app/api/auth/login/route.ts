@@ -40,12 +40,15 @@ export async function POST(req: NextRequest) {
     })
 
     // Set HTTP-only cookie with the token
+    // Важно: sameSite: 'lax' позволяет cookie отправляться при навигации
+    // secure: false в dev, чтобы работало на localhost
+    const isProduction = process.env.NODE_ENV === 'production'
     response.cookies.set('payload-token', result.token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: isProduction,
       sameSite: 'lax',
       path: '/',
-      maxAge: 60 * 60 * 24 * 7, // 7 days
+      maxAge: 60 * 60 * 24 * 7, // 7 days (должен совпадать с tokenExpiration в Users collection)
     })
 
     return response

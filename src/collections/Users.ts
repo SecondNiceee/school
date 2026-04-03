@@ -10,6 +10,8 @@ export const Users: CollectionConfig = {
     // Автоматическую отправку письма отключаем через disableVerificationEmail в payload.create()
     // Наша верификация по коду реализована в /api/auth/register и /api/auth/verify-code
     verify: true,
+    // Срок действия токена - 7 дней (в секундах)
+    tokenExpiration: 60 * 60 * 24 * 7,
   },
   fields: [
     {
