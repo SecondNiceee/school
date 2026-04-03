@@ -12,12 +12,12 @@ export const Materials: CollectionConfig = {
     description: 'Учебные материалы для учеников',
   },
   access: {
-    create: ({ req: { user } }) => user?.role === 'admin',
-    update: ({ req: { user } }) => user?.role === 'admin',
-    delete: ({ req: { user } }) => user?.role === 'admin',
+    create: ({ req: { user } }) => user?.collection === 'admins',
+    update: ({ req: { user } }) => user?.collection === 'admins',
+    delete: ({ req: { user } }) => user?.collection === 'admins',
     read: ({ req: { user } }) => {
       if (!user) return false
-      if (user.role === 'admin') return true
+      if (user.collection === 'admins') return true
       return {
         'assignedTo.id': {
           contains: user.id,
