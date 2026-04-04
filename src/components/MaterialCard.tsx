@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { FileViewer } from './FileViewer'
+import { getProxyFileUrl } from '@/lib/fileUrl'
 
 interface Material {
   id: string | number
@@ -36,10 +37,13 @@ export function MaterialCard({ material }: MaterialCardProps) {
     'mp3', 'wav', 'ogg', 'flac', // Audio
   ].includes(ext)
 
+  // Используем прокси URL для обхода блокировок
+  const proxyUrl = getProxyFileUrl(material.fileUrl)
+
   const handleOpen = () => {
     if (openInNewTab || !canPreview) {
       // PDF и остальные — открываем в новой вкладке на весь экран
-      window.open(material.fileUrl, '_blank', 'noopener,noreferrer')
+      window.open(proxyUrl, '_blank', 'noopener,noreferrer')
     } else {
       setIsViewerOpen(true)
     }
@@ -78,7 +82,7 @@ export function MaterialCard({ material }: MaterialCardProps) {
             Открыть
           </button>
           <a
-            href={material.fileUrl}
+            href={proxyUrl}
             className="material-download"
             download={material.fileName || 'file'}
             target="_blank"
@@ -91,7 +95,8 @@ export function MaterialCard({ material }: MaterialCardProps) {
       
       {isViewerOpen && (
         <FileViewer
-          fileUrl={material.fileUrl}
+          fileUrl={proxyUrl}
+          originalUrl={material.fileUrl}
           fileName={fileName}
           onClose={() => setIsViewerOpen(false)}
         />
