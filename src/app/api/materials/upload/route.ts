@@ -1,16 +1,18 @@
-import { put } from '@vercel/blob'
+import { handleUpload, type HandleUploadBody } from '@vercel/blob/client'
 import { type NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import configPromise from '@/payload.config'
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest): Promise<NextResponse> {
+  const body = (await request.json()) as HandleUploadBody
+
   try {
     const payload = await getPayload({ config: configPromise })
-    
+
     // Check auth
     const authHeader = request.headers.get('authorization')
     let user = null
-    
+
     if (authHeader?.startsWith('Bearer ')) {
       const token = authHeader.substring(7)
       try {
@@ -22,7 +24,7 @@ export async function POST(request: NextRequest) {
         // Token invalid
       }
     }
-    
+
     // Try cookie auth
     if (!user) {
       const cookieHeader = request.headers.get('cookie')
@@ -42,22 +44,41 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const formData = await request.formData()
-    const file = formData.get('file') as File
-
-    if (!file) {
-      return NextResponse.json({ error: 'No file provided' }, { status: 400 })
-    }
-
-    const blob = await put(`materials/${Date.now()}-${file.name}`, file, {
-      access: 'public',
+    const jsonResponse = await handleUpload({
+      body,
+      request,
+      onBeforeGenerateToken: async (pathname) => {
+        // Генерируем токен для загрузки - здесь можно добавить проверки
+        return {
+          allowedContentTypes: [
+            'application/pdf',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.ms-powerpoint',
+            'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+            'image/jpeg',
+            'image/png',
+            'image/gif',
+            'image/webp',
+            'video/mp4',
+            'video/webm',
+            'audio/mpeg',
+            'audio/wav',
+          ],
+          maximumSizeInBytes: 100 * 1024 * 1024, // 100MB лимит
+          tokenPayload: JSON.stringify({
+            uploadedBy: user.id,
+          }),
+        }
+      },
+      onUploadCompleted: async ({ blob, tokenPayload }) => {
+        // Вызывается после успешной загрузки
+        console.log('Upload completed:', blob.url)
+        // Здесь можно сохранить информацию о файле в БД если нужно
+      },
     })
 
-    return NextResponse.json({
-      url: blob.url,
-      fileName: file.name,
-      fileSize: file.size,
-    })
+    return NextResponse.json(jsonResponse)
   } catch (error) {
     console.error('Upload error:', error)
     return NextResponse.json({ error: 'Upload failed' }, { status: 500 })
