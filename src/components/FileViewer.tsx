@@ -4,11 +4,12 @@ import { useState } from 'react'
 
 interface FileViewerProps {
   fileUrl: string
+  originalUrl?: string // Оригинальный URL для Office Viewer
   fileName: string
   onClose: () => void
 }
 
-export function FileViewer({ fileUrl, fileName, onClose }: FileViewerProps) {
+export function FileViewer({ fileUrl, originalUrl, fileName, onClose }: FileViewerProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(false)
   
@@ -21,11 +22,12 @@ export function FileViewer({ fileUrl, fileName, onClose }: FileViewerProps) {
   const isAudio = ['mp3', 'wav', 'ogg', 'flac'].includes(ext)
   
   // Для Office файлов используем Microsoft Office Online Viewer
-  // Требуется публичный URL файла
+  // Требуется публичный URL файла (прокси не подойдет)
   const getViewerUrl = () => {
     if (isOfficeFile) {
-      // Microsoft Office Online Viewer
-      const encodedUrl = encodeURIComponent(fileUrl)
+      // Microsoft Office Online Viewer требует публичный URL
+      const publicUrl = originalUrl || fileUrl
+      const encodedUrl = encodeURIComponent(publicUrl)
       return `https://view.officeapps.live.com/op/embed.aspx?src=${encodedUrl}`
     }
     return fileUrl
