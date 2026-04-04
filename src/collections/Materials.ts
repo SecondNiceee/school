@@ -38,32 +38,13 @@ export const Materials: CollectionConfig = {
       label: 'Описание',
     },
     {
-      name: 'fileUrl',
-      type: 'text',
-      label: 'URL файла',
+      name: 'file',
+      type: 'upload',
+      relationTo: 'media',
+      label: 'Файл',
       required: true,
       admin: {
-        components: {
-          Field: '@/components/MaterialUpload#MaterialUploadField',
-        },
-      },
-    },
-    {
-      name: 'fileName',
-      type: 'text',
-      label: 'Имя файла',
-      admin: {
-        readOnly: true,
-        hidden: true,
-      },
-    },
-    {
-      name: 'fileSize',
-      type: 'number',
-      label: 'Размер файла',
-      admin: {
-        readOnly: true,
-        hidden: true,
+        description: 'Загрузите файл или выберите из Media библиотеки',
       },
     },
     {
