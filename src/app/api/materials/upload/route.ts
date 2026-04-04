@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    if (!user || user.role !== 'admin') {
+    if (!user || user.collection !== 'admins') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
