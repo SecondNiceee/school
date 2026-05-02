@@ -1,6 +1,13 @@
 import React from 'react'
 import type { Metadata } from 'next'
-import './styles.css'
+import { Inter } from 'next/font/google'
+import '@/app/globals.css'
+
+const inter = Inter({
+  subsets: ['latin', 'cyrillic'],
+  variable: '--font-inter',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: 'Погружение в науку — Онлайн школа | Ирина Титова',
@@ -54,8 +61,8 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
   const { children } = props
 
   return (
-    <html lang="ru">
-      <body>
+    <html lang="ru" className={`${inter.variable} bg-background`}>
+      <body className="font-sans">
         <main>{children}</main>
       </body>
     </html>
