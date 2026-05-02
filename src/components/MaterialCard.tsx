@@ -51,22 +51,22 @@ export function MaterialCard({ material }: MaterialCardProps) {
 
   return (
     <>
-      <div className="material-card">
-        <div className="material-icon">
+      <div className="flex items-center gap-4 p-4 px-5 bg-background rounded-xl transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(99,102,241,0.15)] max-sm:flex-col max-sm:text-center">
+        <div className="text-[32px] shrink-0">
           {getFileIcon(fileName)}
         </div>
-        <div className="material-info">
-          <h3 className="material-title">{material.title}</h3>
+        <div className="flex-1 min-w-0">
+          <h3 className="m-0 text-base font-semibold text-text">{material.title}</h3>
           {material.description && (
-            <p className="material-description">{material.description}</p>
+            <p className="m-0 text-sm text-text-light line-clamp-2">{material.description}</p>
           )}
           {material.fileName && (
-            <span className="material-filename">
+            <span className="block text-xs text-primary font-mono mb-0 break-all">
               {material.fileName}
               {material.fileSize && ` (${formatFileSize(material.fileSize)})`}
             </span>
           )}
-          <span className="material-date">
+          <span className="text-xs text-text-light opacity-70">
             {new Date(material.createdAt).toLocaleDateString('ru-RU', {
               day: 'numeric',
               month: 'long',
@@ -74,16 +74,16 @@ export function MaterialCard({ material }: MaterialCardProps) {
             })}
           </span>
         </div>
-        <div className="material-actions">
+        <div className="flex gap-2 shrink-0 max-sm:w-full max-sm:justify-center">
           <button
             onClick={handleOpen}
-            className="material-open"
+            className="py-2.5 px-5 text-sm font-medium text-primary bg-transparent border-2 border-primary rounded-lg no-underline transition-all duration-200 cursor-pointer hover:bg-primary hover:text-white"
           >
             Открыть
           </button>
           <a
             href={proxyUrl}
-            className="material-download"
+            className="shrink-0 py-2.5 px-5 text-sm font-medium text-white bg-gradient-primary rounded-lg no-underline transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(99,102,241,0.4)]"
             download={material.fileName || 'file'}
             target="_blank"
             rel="noopener noreferrer"

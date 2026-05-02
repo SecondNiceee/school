@@ -65,10 +65,12 @@ export default async function LKPage() {
   }))
 
   return (
-    <div className="lk-page">
-      <header className="lk-header">
-        <div className="lk-greeting">
-          <h1>Приветствую, <span>{user.name || 'друг'}</span>!</h1>
+    <div className="min-h-screen p-8 bg-background">
+      <header className="flex justify-between items-center max-w-[1200px] mx-auto mb-10 p-5 px-6 bg-surface rounded-2xl shadow-[0_4px_20px_rgba(99,102,241,0.1)] max-sm:flex-col max-sm:gap-4 max-sm:text-center">
+        <div>
+          <h1 className="m-0 text-[28px] text-text">
+            Приветствую, <span className="text-gradient-primary">{user.name || 'друг'}</span>!
+          </h1>
         </div>
         <LogoutButton />
       </header>

@@ -11,15 +11,14 @@
 
 ## Этап 1: Подготовка инфраструктуры
 
-### Шаг 1.1: Установка Tailwind CSS
+### Шаг 1.1: Установка Tailwind CSS ✅ ВЫПОЛНЕНО
 ```bash
-pnpm add -D tailwindcss postcss autoprefixer
-npx tailwindcss init -p
+pnpm add -D tailwindcss postcss autoprefixer @tailwindcss/postcss
 ```
 
-### Шаг 1.2: Настройка tailwind.config.ts
-- Создать конфигурацию с путями к файлам
-- Добавить кастомные цвета из CSS переменных:
+### Шаг 1.2: Настройка tailwind.config.ts ✅ ВЫПОЛНЕНО (через @theme в globals.css для Tailwind v4)
+- Создана конфигурация с CSS-first подходом Tailwind v4
+- Добавлены кастомные цвета из CSS переменных:
   - `primary: #6366f1`
   - `primary-light: #818cf8`
   - `secondary: #f472b6`
@@ -29,75 +28,77 @@ npx tailwindcss init -p
   - `surface: #ffffff`
   - `text: #1e1b4b`
   - `text-light: #6b7280`
-- Добавить кастомные шрифты (Inter, Roboto Mono)
+- Добавлены кастомные шрифты (Inter, Roboto Mono)
 
-### Шаг 1.3: Создание globals.css
-- Создать `src/app/globals.css` с базовыми директивами Tailwind
-- Добавить `@tailwind base`, `@tailwind components`, `@tailwind utilities`
-- Перенести базовые стили (reset, html, body)
+### Шаг 1.3: Создание globals.css ✅ ВЫПОЛНЕНО
+- Создан `src/app/globals.css` с директивами Tailwind v4
+- Добавлен `@import 'tailwindcss'` и `@theme` блок
+- Перенесены базовые стили (reset, html, body) в @layer base
+- Добавлены utility классы для градиентов
 
-### Шаг 1.4: Обновление layout.tsx
-- Импортировать `globals.css` вместо `styles.css`
-- Подключить шрифты через `next/font`
+### Шаг 1.4: Обновление layout.tsx ✅ ВЫПОЛНЕНО
+- Импортируется `globals.css` вместо `styles.css`
+- Подключен шрифт Inter через `next/font/google`
 
 ---
 
 ## Этап 2: Миграция базовых элементов
 
-### Шаг 2.1: Глобальные стили (reset)
-**Файл:** `styles.css` строки 1-100
-- [ ] `:root` переменные → tailwind.config.ts
-- [ ] `*` box-sizing → @layer base
-- [ ] `html` стили → @layer base
-- [ ] `body` стили → @layer base
-- [ ] `img` стили → @layer base
-- [ ] `h1` стили → @layer base
-- [ ] `p` стили → @layer base
-- [ ] `a` стили → @layer base
-- [ ] `svg` стили → @layer base
+### Шаг 2.1: Глобальные стили (reset) ✅ ВЫПОЛНЕНО
+**Файл:** `globals.css` @layer base
+- [x] `:root` переменные → @theme в globals.css
+- [x] `*` box-sizing → @layer base
+- [x] `html` стили → @layer base
+- [x] `body` стили → @layer base
+- [x] `img` стили → @layer base
+- [x] `h1` стили → @layer base
+- [x] `p` стили → @layer base
+- [x] `a` стили → @layer base
+- [x] `svg` стили → @layer base
 
-### Шаг 2.2: Анимации
-- [ ] `@keyframes float` → tailwind.config.ts extend.keyframes
-- [ ] `@keyframes fadeInUp` → tailwind.config.ts extend.keyframes
-- [ ] `@keyframes pulse-dot` → tailwind.config.ts extend.keyframes
-- [ ] `@keyframes spin` → использовать встроенный animate-spin
+### Шаг 2.2: Анимации ✅ ВЫПОЛНЕНО
+- [x] `@keyframes float` → @theme в globals.css
+- [x] `@keyframes fadeInUp` → не использовался
+- [x] `@keyframes pulse-dot` → не использовался
+- [x] `@keyframes scaleIn` → @theme в globals.css
+- [x] `@keyframes spin` → использован встроенный animate-spin
 
 ---
 
 ## Этап 3: Миграция компонентов Header/Footer
 
-### Шаг 3.1: Site Header
-**Файл:** `src/app/(frontend)/layout.tsx`
-- [ ] `.site-header` → inline Tailwind классы
-- [ ] `.logo` → inline Tailwind классы
-- [ ] `.logo-icon` → inline Tailwind классы
-- [ ] `.logo-text` → inline Tailwind классы
-- [ ] `.header-login-btn` → inline Tailwind классы
+### Шаг 3.1: Site Header ✅ ВЫПОЛНЕНО
+**Файл:** `src/app/(frontend)/page.tsx`
+- [x] `.site-header` → inline Tailwind классы
+- [x] `.logo` → inline Tailwind классы
+- [x] `.logo-icon` → inline Tailwind классы
+- [x] `.logo-text` → inline Tailwind классы
+- [x] `.header-login-btn` → inline Tailwind классы
 
-### Шаг 3.2: Animated Background
-**Файл:** `src/app/(frontend)/layout.tsx`
-- [ ] `.animated-bg` → inline Tailwind классы
-- [ ] `.floating-element` → inline Tailwind классы
-- [ ] `.floating-element.atom` → inline Tailwind классы
-- [ ] `.floating-element.flask` → inline Tailwind классы
-- [ ] `.floating-element.calculator` → inline Tailwind классы
-- [ ] `.floating-element.book` → inline Tailwind классы
+### Шаг 3.2: Animated Background ✅ ВЫПОЛНЕНО
+**Файл:** `src/app/(frontend)/page.tsx`
+- [x] `.animated-bg` → inline Tailwind классы
+- [x] `.floating-element` → inline Tailwind классы
+- [x] `.floating-element.atom` → inline Tailwind классы
+- [x] `.floating-element.flask` → inline Tailwind классы
+- [x] `.floating-element.calculator` → не использовался
+- [x] `.floating-element.book` → inline Tailwind классы
 
 ---
 
 ## Этап 4: Миграция главной страницы
 
-### Шаг 4.1: Hero Section
+### Шаг 4.1: Hero Section ✅ ВЫПОЛНЕНО
 **Файл:** `src/app/(frontend)/page.tsx`
-- [ ] `.hero` → inline Tailwind классы
-- [ ] `.hero-content` → inline Tailwind классы
-- [ ] `.hero-badge` → inline Tailwind классы
-- [ ] `.hero-title` → inline Tailwind классы
-- [ ] `.hero-subtitle` → inline Tailwind классы
-- [ ] `.hero-actions` → inline Tailwind классы
-- [ ] `.hero-btn` → inline Tailwind классы
-- [ ] `.hero-btn.primary` → inline Tailwind классы
-- [ ] `.hero-btn.secondary` → inline Tailwind классы
+- [x] `.hero` → inline Tailwind классы (.home класс)
+- [x] `.hero-content` → inline Tailwind классы (.content)
+- [x] `.hero-badge` → не использовался
+- [x] `.hero-title` → inline Tailwind классы (h1)
+- [x] `.hero-subtitle` → inline Tailwind классы (.subtitle)
+- [x] `.hero-actions` → inline Tailwind классы (.links)
+- [x] `.hero-btn` → inline Tailwind классы
+- [x] `.hero-btn.primary` → inline Tailwind классы
+- [x] `.hero-btn.secondary` → inline Tailwind классы
 
 ### Шаг 4.2: Features Section
 **Файл:** `src/app/(frontend)/page.tsx`
@@ -129,154 +130,154 @@ npx tailwindcss init -p
 
 ## Этап 5: Миграция страницы авторизации
 
-### Шаг 5.1: Auth Container
+### Шаг 5.1: Auth Container ✅ ВЫПОЛНЕНО
 **Файл:** `src/app/(frontend)/login/page.tsx`
-- [ ] `.auth-page` → inline Tailwind классы
-- [ ] `.auth-card` → inline Tailwind классы
-- [ ] `.auth-header` → inline Tailwind классы
-- [ ] `.auth-icon` → inline Tailwind классы
-- [ ] `.auth-title` → inline Tailwind классы
-- [ ] `.auth-subtitle` → inline Tailwind классы
+- [x] `.auth-page` → inline Tailwind классы
+- [x] `.auth-card` → inline Tailwind классы
+- [x] `.auth-header` → inline Tailwind классы
+- [x] `.auth-icon` → не использовался
+- [x] `.auth-title` → inline Tailwind классы (h1)
+- [x] `.auth-subtitle` → inline Tailwind классы
 
-### Шаг 5.2: Login Form Component
+### Шаг 5.2: Login Form Component ✅ ВЫПОЛНЕНО
 **Файл:** `src/components/auth/LoginForm.tsx`
-- [ ] `.auth-form` → inline Tailwind классы
-- [ ] `.form-group` → inline Tailwind классы
-- [ ] `.form-label` → inline Tailwind классы
-- [ ] `.form-input` → inline Tailwind классы
-- [ ] `.form-error` → inline Tailwind классы
-- [ ] `.form-submit` → inline Tailwind классы
-- [ ] `.form-footer` → inline Tailwind классы
+- [x] `.auth-form` → inline Tailwind классы
+- [x] `.form-group` → inline Tailwind классы
+- [x] `.form-label` → inline Tailwind классы
+- [x] `.form-input` → inline Tailwind классы
+- [x] `.form-error` → inline Tailwind классы (.message.error)
+- [x] `.form-submit` → inline Tailwind классы (.submit-btn)
+- [x] `.form-footer` → inline Tailwind классы (.auth-link)
 
 ---
 
 ## Этап 6: Миграция страницы регистрации
 
-### Шаг 6.1: Register Page
+### Шаг 6.1: Register Page ✅ ВЫПОЛНЕНО
 **Файл:** `src/app/(frontend)/register/page.tsx`
-- [ ] Использовать те же классы что и login (auth-page, auth-card и т.д.)
+- [x] Использует те же классы что и login (auth-page, auth-card и т.д.)
 
-### Шаг 6.2: Register Form Component
+### Шаг 6.2: Register Form Component ✅ ВЫПОЛНЕНО
 **Файл:** `src/components/auth/RegisterForm.tsx`
-- [ ] Аналогично LoginForm
+- [x] Аналогично LoginForm - все классы мигрированы
 
 ---
 
 ## Этап 7: Миграция страницы верификации email
 
-### Шаг 7.1: Verify Email Page
+### Шаг 7.1: Verify Email Page ✅ ВЫПОЛНЕНО
 **Файл:** `src/app/(frontend)/verify-email/page.tsx`
-- [ ] `.verify-page` → inline Tailwind классы
-- [ ] `.verify-card` → inline Tailwind классы
-- [ ] `.verify-icon` → inline Tailwind классы
-- [ ] `.verify-title` → inline Tailwind классы
-- [ ] `.verify-message` → inline Tailwind классы
-- [ ] `.verify-loading` → inline Tailwind классы
-- [ ] `.verify-error` → inline Tailwind классы
-- [ ] `.verify-success` → inline Tailwind классы
+- [x] `.verify-page` → inline Tailwind классы
+- [x] `.verify-card` → inline Tailwind классы
+- [x] `.verify-icon` → не использовался
+- [x] `.verify-title` → inline Tailwind классы (h1)
+- [x] `.verify-message` → inline Tailwind классы (p)
+- [x] `.verify-loading` → не использовался (SSR страница)
+- [x] `.verify-error` → inline Tailwind классы
+- [x] `.verify-success` → inline Tailwind классы
 
 ---
 
 ## Этап 8: Миграция личного кабинета (LK)
 
-### Шаг 8.1: LK Page Container
+### Шаг 8.1: LK Page Container ✅ ВЫПОЛНЕНО
 **Файл:** `src/app/(frontend)/lk/page.tsx`
-- [ ] `.lk-page` → inline Tailwind классы
-- [ ] `.lk-header` → inline Tailwind классы
-- [ ] `.lk-avatar` → inline Tailwind классы
-- [ ] `.lk-user-info` → inline Tailwind классы
-- [ ] `.lk-welcome` → inline Tailwind классы
-- [ ] `.lk-email` → inline Tailwind классы
+- [x] `.lk-page` → inline Tailwind классы
+- [x] `.lk-header` → inline Tailwind классы
+- [x] `.lk-avatar` → не использовался
+- [x] `.lk-user-info` → не использовался
+- [x] `.lk-welcome` → inline Tailwind классы (.lk-greeting h1)
+- [x] `.lk-email` → не использовался
 
-### Шаг 8.2: LK Tabs Component
+### Шаг 8.2: LK Tabs Component ✅ ВЫПОЛНЕНО
 **Файл:** `src/app/(frontend)/lk/LKTabs.tsx`
-- [ ] `.lk-content` → inline Tailwind классы
-- [ ] `.lk-tabs` → inline Tailwind классы
-- [ ] `.lk-tab` → inline Tailwind классы
-- [ ] `.lk-tab.active` → inline Tailwind классы
-- [ ] `.tab-badge` → inline Tailwind классы
+- [x] `.lk-content` → inline Tailwind классы
+- [x] `.lk-tabs` → inline Tailwind классы
+- [x] `.lk-tab` → inline Tailwind классы
+- [x] `.lk-tab.active` → inline Tailwind классы (условный класс)
+- [x] `.tab-badge` → inline Tailwind классы
 
-### Шаг 8.3: Materials Section
+### Шаг 8.3: Materials Section ✅ ВЫПОЛНЕНО
 **Файл:** `src/app/(frontend)/lk/LKTabs.tsx`
-- [ ] `.lk-materials` → inline Tailwind классы
-- [ ] `.materials-empty` → inline Tailwind классы
-- [ ] `.materials-list` → inline Tailwind классы
+- [x] `.lk-materials` → inline Tailwind классы
+- [x] `.materials-empty` → inline Tailwind классы (.lk-empty)
+- [x] `.materials-list` → inline Tailwind классы
 
-### Шаг 8.4: Tests Section
+### Шаг 8.4: Tests Section ✅ ВЫПОЛНЕНО
 **Файл:** `src/app/(frontend)/lk/LKTabs.tsx`
-- [ ] `.lk-tests` → inline Tailwind классы
-- [ ] `.tests-section` → inline Tailwind классы
-- [ ] `.tests-section-title` → inline Tailwind классы
-- [ ] `.tests-grid` → inline Tailwind классы
+- [x] `.lk-tests` → inline Tailwind классы
+- [x] `.tests-section` → inline Tailwind классы
+- [x] `.tests-section-title` → inline Tailwind классы
+- [x] `.tests-grid` → inline Tailwind классы
 
 ---
 
 ## Этап 9: Миграция компонентов карточек
 
-### Шаг 9.1: Material Card
+### Шаг 9.1: Material Card ✅ ВЫПОЛНЕНО
 **Файл:** `src/components/MaterialCard.tsx`
-- [ ] `.material-card` → inline Tailwind классы
-- [ ] `.material-title` → inline Tailwind классы
-- [ ] `.material-desc` → inline Tailwind классы
-- [ ] `.material-meta` → inline Tailwind классы
-- [ ] `.material-btn` → inline Tailwind классы
+- [x] `.material-card` → inline Tailwind классы
+- [x] `.material-title` → inline Tailwind классы
+- [x] `.material-desc` → inline Tailwind классы (.material-description)
+- [x] `.material-meta` → inline Tailwind классы
+- [x] `.material-btn` → inline Tailwind классы (.material-open, .material-download)
 
-### Шаг 9.2: Test Card
+### Шаг 9.2: Test Card ✅ ВЫПОЛНЕНО
 **Файл:** `src/components/TestCard.tsx`
-- [ ] `.test-card` → inline Tailwind классы
-- [ ] `.test-card.completed` → inline Tailwind классы
-- [ ] `.test-card-header` → inline Tailwind классы
-- [ ] `.completed-badge` → inline Tailwind классы
-- [ ] `.test-card-desc` → inline Tailwind классы
-- [ ] `.test-card-meta` → inline Tailwind классы
-- [ ] `.test-card-result` → inline Tailwind классы
-- [ ] `.result-score` → inline Tailwind классы
-- [ ] `.start-test-btn` → inline Tailwind классы
+- [x] `.test-card` → inline Tailwind классы
+- [x] `.test-card.completed` → inline Tailwind классы (условный класс)
+- [x] `.test-card-header` → inline Tailwind классы
+- [x] `.completed-badge` → inline Tailwind классы
+- [x] `.test-card-desc` → inline Tailwind классы
+- [x] `.test-card-meta` → inline Tailwind классы
+- [x] `.test-card-result` → inline Tailwind классы
+- [x] `.result-score` → inline Tailwind классы
+- [x] `.start-test-btn` → inline Tailwind классы
 
 ---
 
 ## Этап 10: Миграция Test Taker Modal
 
-### Шаг 10.1: Modal Container
+### Шаг 10.1: Modal Container ✅ ВЫПОЛНЕНО
 **Файл:** `src/components/TestTaker.tsx`
-- [ ] `.test-taker-overlay` → inline Tailwind классы
-- [ ] `.test-taker-modal` → inline Tailwind классы
-- [ ] `.test-taker-header` → inline Tailwind классы
-- [ ] `.close-test-btn` → inline Tailwind классы
+- [x] `.test-taker-overlay` → inline Tailwind классы
+- [x] `.test-taker-modal` → inline Tailwind классы
+- [x] `.test-taker-header` → inline Tailwind классы
+- [x] `.close-test-btn` → inline Tailwind классы
 
-### Шаг 10.2: Progress Section
+### Шаг 10.2: Progress Section ✅ ВЫПОЛНЕНО
 **Файл:** `src/components/TestTaker.tsx`
-- [ ] `.test-progress` → inline Tailwind классы
-- [ ] `.progress-bar` → inline Tailwind классы
-- [ ] `.progress-fill` → inline Tailwind классы
-- [ ] `.progress-text` → inline Tailwind классы
+- [x] `.test-progress` → inline Tailwind классы
+- [x] `.progress-bar` → inline Tailwind классы
+- [x] `.progress-fill` → inline Tailwind классы
+- [x] `.progress-text` → inline Tailwind классы
 
-### Шаг 10.3: Question View
+### Шаг 10.3: Question View ✅ ВЫПОЛНЕНО
 **Файл:** `src/components/TestTaker.tsx`
-- [ ] `.question-view` → inline Tailwind классы
-- [ ] `.question-text` → inline Tailwind классы
-- [ ] `.options-view` → inline Tailwind классы
-- [ ] `.option-label` → inline Tailwind классы
-- [ ] `.option-label.selected` → inline Tailwind классы
-- [ ] `.text-answer-input` → inline Tailwind классы
+- [x] `.question-view` → inline Tailwind классы
+- [x] `.question-text` → inline Tailwind классы
+- [x] `.options-view` → inline Tailwind классы
+- [x] `.option-label` → inline Tailwind классы
+- [x] `.option-label.selected` → inline Tailwind классы (условный класс)
+- [x] `.text-answer-input` → inline Tailwind классы
 
-### Шаг 10.4: Navigation
+### Шаг 10.4: Navigation ✅ ВЫПОЛНЕНО
 **Файл:** `src/components/TestTaker.tsx`
-- [ ] `.test-navigation` → inline Tailwind классы
-- [ ] `.nav-btn` → inline Tailwind классы
-- [ ] `.nav-btn.prev-btn` → inline Tailwind классы
-- [ ] `.nav-btn.next-btn` → inline Tailwind классы
-- [ ] `.nav-btn.submit-btn` → inline Tailwind классы
-- [ ] `.questions-dots` → inline Tailwind классы
-- [ ] `.dot` → inline Tailwind классы
+- [x] `.test-navigation` → inline Tailwind классы
+- [x] `.nav-btn` → inline Tailwind классы
+- [x] `.nav-btn.prev-btn` → inline Tailwind классы
+- [x] `.nav-btn.next-btn` → inline Tailwind классы
+- [x] `.nav-btn.submit-btn` → inline Tailwind классы
+- [x] `.questions-dots` → inline Tailwind классы
+- [x] `.dot` → inline Tailwind классы
 
-### Шаг 10.5: Result View
+### Шаг 10.5: Result View ✅ ВЫПОЛНЕНО
 **Файл:** `src/components/TestTaker.tsx`
-- [ ] `.test-result-view` → inline Tailwind классы
-- [ ] `.result-circle` → inline Tailwind классы
-- [ ] `.result-percentage` → inline Tailwind классы
-- [ ] `.result-text` → inline Tailwind классы
-- [ ] `.finish-btn` → inline Tailwind классы
+- [x] `.test-result-view` → inline Tailwind классы
+- [x] `.result-circle` → inline Tailwind классы
+- [x] `.result-percentage` → inline Tailwind классы
+- [x] `.result-text` → inline Tailwind классы
+- [x] `.finish-btn` → inline Tailwind классы
 
 ---
 

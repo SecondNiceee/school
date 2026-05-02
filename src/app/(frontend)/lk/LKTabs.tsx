@@ -80,33 +80,43 @@ export function LKTabs({ materials, MaterialCard }: LKTabsProps) {
   const completedTests = tests.filter((t) => t.completed)
 
   return (
-    <div className="lk-content">
-      <nav className="lk-tabs">
+    <div className="max-w-[1200px] mx-auto">
+      <nav className="flex gap-2 mb-6">
         <button
-          className={`lk-tab ${activeTab === 'materials' ? 'active' : ''}`}
+          className={`py-3 px-6 text-sm font-medium rounded-lg border-none cursor-pointer transition-all duration-200 ${
+            activeTab === 'materials'
+              ? 'bg-primary text-white'
+              : 'bg-transparent text-text-light hover:bg-primary/10 hover:text-primary'
+          }`}
           onClick={() => setActiveTab('materials')}
         >
           Материалы
         </button>
         <button
-          className={`lk-tab ${activeTab === 'tests' ? 'active' : ''}`}
+          className={`py-3 px-6 text-sm font-medium rounded-lg border-none cursor-pointer transition-all duration-200 flex items-center gap-2 ${
+            activeTab === 'tests'
+              ? 'bg-primary text-white'
+              : 'bg-transparent text-text-light hover:bg-primary/10 hover:text-primary'
+          }`}
           onClick={() => setActiveTab('tests')}
         >
           Тесты
           {pendingTests.length > 0 && (
-            <span className="tab-badge">{pendingTests.length}</span>
+            <span className="bg-secondary text-white text-xs font-semibold px-2 py-0.5 rounded-full">
+              {pendingTests.length}
+            </span>
           )}
         </button>
       </nav>
 
       {activeTab === 'materials' && (
-        <section className="lk-materials">
+        <section className="bg-surface rounded-2xl p-6 shadow-[0_4px_20px_rgba(99,102,241,0.1)]">
           {materials.length === 0 ? (
-            <div className="lk-empty">
-              <p>У вас пока нет учебных материалов</p>
+            <div className="text-center py-12 px-6 text-text-light">
+              <p className="m-0 text-base">У вас пока нет учебных материалов</p>
             </div>
           ) : (
-            <div className="materials-list">
+            <div className="flex flex-col gap-4">
               {materials.map((material) => (
                 <MaterialCard key={material.id} material={material} />
               ))}
@@ -116,22 +126,22 @@ export function LKTabs({ materials, MaterialCard }: LKTabsProps) {
       )}
 
       {activeTab === 'tests' && (
-        <section className="lk-tests">
+        <section>
           {testsLoading ? (
-            <div className="lk-loading">
-              <div className="spinner"></div>
-              <p>Загрузка тестов...</p>
+            <div className="flex flex-col items-center justify-center py-12 gap-4 text-text-light">
+              <div className="w-10 h-10 border-[3px] border-primary/20 border-t-primary rounded-full animate-spin" />
+              <p className="m-0">Загрузка тестов...</p>
             </div>
           ) : tests.length === 0 ? (
-            <div className="lk-empty">
-              <p>У вас пока нет назначенных тестов</p>
+            <div className="bg-surface rounded-2xl p-6 shadow-[0_4px_20px_rgba(99,102,241,0.1)] text-center py-12 text-text-light">
+              <p className="m-0 text-base">У вас пока нет назначенных тестов</p>
             </div>
           ) : (
             <>
               {pendingTests.length > 0 && (
-                <div className="tests-section">
-                  <h3 className="tests-section-title">Ожидают прохождения</h3>
-                  <div className="tests-grid">
+                <div className="mb-8">
+                  <h3 className="text-lg font-semibold text-text mb-4">Ожидают прохождения</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {pendingTests.map((test) => (
                       <TestCard key={test.id} test={test} onStart={handleStartTest} />
                     ))}
@@ -140,9 +150,9 @@ export function LKTabs({ materials, MaterialCard }: LKTabsProps) {
               )}
 
               {completedTests.length > 0 && (
-                <div className="tests-section">
-                  <h3 className="tests-section-title">Пройденные тесты</h3>
-                  <div className="tests-grid">
+                <div className="mb-8">
+                  <h3 className="text-lg font-semibold text-text mb-4">Пройденные тесты</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {completedTests.map((test) => (
                       <TestCard key={test.id} test={test} onStart={handleStartTest} />
                     ))}

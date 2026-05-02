@@ -43,29 +43,44 @@ export function FileViewer({ fileUrl, originalUrl, fileName, onClose }: FileView
   }
 
   return (
-    <div className="file-viewer-overlay" onClick={onClose}>
-      <div className="file-viewer-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="file-viewer-header">
-          <h3 className="file-viewer-title">{fileName}</h3>
-          <button className="file-viewer-close" onClick={onClose} aria-label="Закрыть">
+    <div 
+      className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[1000] p-6"
+      onClick={onClose}
+    >
+      <div 
+        className="w-full max-w-[1200px] h-[90vh] max-h-[900px] bg-surface rounded-2xl flex flex-col overflow-hidden shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex justify-between items-center py-4 px-6 border-b border-primary/10 shrink-0">
+          <h3 className="m-0 text-base font-semibold text-text truncate">{fileName}</h3>
+          <button 
+            className="p-2 bg-transparent border-none text-text-light cursor-pointer rounded-lg transition-all duration-200 hover:bg-primary/10 hover:text-primary"
+            onClick={onClose} 
+            aria-label="Закрыть"
+          >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M18 6L6 18M6 6l12 12" />
             </svg>
           </button>
         </div>
         
-        <div className="file-viewer-content">
+        <div className="flex-1 relative overflow-hidden bg-slate-100">
           {isLoading && (
-            <div className="file-viewer-loading">
-              <div className="file-viewer-spinner" />
-              <p>Загрузка файла...</p>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-4 text-text-light">
+              <div className="w-10 h-10 border-[3px] border-primary/20 border-t-primary rounded-full animate-spin" />
+              <p className="m-0">Загрузка файла...</p>
             </div>
           )}
           
           {error && (
-            <div className="file-viewer-error">
-              <p>Не удалось загрузить файл</p>
-              <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="file-viewer-fallback">
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-4 text-center text-text-light">
+              <p className="m-0">Не удалось загрузить файл</p>
+              <a 
+                href={fileUrl} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="py-2.5 px-5 text-sm font-medium text-primary bg-transparent border-2 border-primary rounded-lg no-underline transition-all duration-200 hover:bg-primary hover:text-white"
+              >
                 Открыть в новой вкладке
               </a>
             </div>
@@ -74,7 +89,7 @@ export function FileViewer({ fileUrl, originalUrl, fileName, onClose }: FileView
           {isOfficeFile && !error && (
             <iframe
               src={getViewerUrl()}
-              className="file-viewer-iframe"
+              className="w-full h-full border-none"
               onLoad={handleLoad}
               onError={handleError}
               title={fileName}
@@ -86,7 +101,7 @@ export function FileViewer({ fileUrl, originalUrl, fileName, onClose }: FileView
             <img
               src={fileUrl}
               alt={fileName}
-              className="file-viewer-image"
+              className="max-w-full max-h-full object-contain absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
               onLoad={handleLoad}
               onError={handleError}
             />
@@ -96,19 +111,19 @@ export function FileViewer({ fileUrl, originalUrl, fileName, onClose }: FileView
             <video
               src={fileUrl}
               controls
-              className="file-viewer-video"
+              className="max-w-full max-h-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
               onLoadedData={handleLoad}
               onError={handleError}
             />
           )}
           
           {isAudio && !error && (
-            <div className="file-viewer-audio-container">
-              <div className="file-viewer-audio-icon">🎵</div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-6 p-8 bg-surface rounded-2xl">
+              <div className="text-6xl">🎵</div>
               <audio
                 src={fileUrl}
                 controls
-                className="file-viewer-audio"
+                className="w-[300px]"
                 onLoadedData={handleLoad}
                 onError={handleError}
               />
@@ -116,22 +131,27 @@ export function FileViewer({ fileUrl, originalUrl, fileName, onClose }: FileView
           )}
           
           {!isOfficeFile && !isImage && !isVideo && !isAudio && (
-            <div className="file-viewer-unsupported">
-              <p>Предпросмотр недоступен для этого типа файла</p>
-              <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="file-viewer-fallback">
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-4 text-center text-text-light">
+              <p className="m-0">Предпросмотр недоступен для этого типа файла</p>
+              <a 
+                href={fileUrl} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="py-2.5 px-5 text-sm font-medium text-primary bg-transparent border-2 border-primary rounded-lg no-underline transition-all duration-200 hover:bg-primary hover:text-white"
+              >
                 Открыть в новой вкладке
               </a>
             </div>
           )}
         </div>
         
-        <div className="file-viewer-footer">
+        <div className="py-4 px-6 border-t border-primary/10 shrink-0 flex justify-center">
           <a
             href={fileUrl}
             download={fileName}
             target="_blank"
             rel="noopener noreferrer"
-            className="file-viewer-download"
+            className="py-2.5 px-6 text-sm font-medium text-white bg-gradient-primary rounded-lg no-underline transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(99,102,241,0.4)]"
           >
             Скачать файл
           </a>
