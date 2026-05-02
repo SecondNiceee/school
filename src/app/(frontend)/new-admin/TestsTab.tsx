@@ -269,14 +269,19 @@ export function TestsTab({ students }: TestsTabProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-text mb-1">Описание</label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Описание (необязательно)"
-              rows={2}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors resize-none"
-            />
+            <label className="block text-sm font-medium text-text mb-2">Описание</label>
+            <div className="relative">
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Добавьте описание теста, инструкции или важные заметки для учеников..."
+                rows={4}
+                className="w-full px-4 py-3 border-2 border-primary/20 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none bg-gradient-to-br from-white to-primary/5 text-text placeholder:text-text-light/60"
+              />
+              <div className="absolute bottom-3 right-3 text-xs text-text-light/50">
+                {description.length} символов
+              </div>
+            </div>
           </div>
 
           <div>
@@ -285,7 +290,7 @@ export function TestsTab({ students }: TestsTabProps) {
               <button
                 type="button"
                 onClick={addQuestion}
-                className="px-3 py-1 text-sm text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                className="px-4 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors shadow-sm"
               >
                 + Добавить вопрос
               </button>
@@ -320,14 +325,36 @@ export function TestsTab({ students }: TestsTabProps) {
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
                     />
 
-                    <select
-                      value={q.questionType}
-                      onChange={(e) => updateQuestion(qIndex, 'questionType', e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors bg-white"
-                    >
-                      <option value="choice">С вариантами ответов</option>
-                      <option value="text">Текстовый ответ</option>
-                    </select>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => updateQuestion(qIndex, 'questionType', 'choice')}
+                        className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border-2 transition-all ${
+                          q.questionType === 'choice'
+                            ? 'border-primary bg-primary/10 text-primary'
+                            : 'border-gray-200 bg-white text-text-light hover:border-primary/50'
+                        }`}
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                        </svg>
+                        <span className="text-sm font-medium">С вариантами</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => updateQuestion(qIndex, 'questionType', 'text')}
+                        className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border-2 transition-all ${
+                          q.questionType === 'text'
+                            ? 'border-primary bg-primary/10 text-primary'
+                            : 'border-gray-200 bg-white text-text-light hover:border-primary/50'
+                        }`}
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                        <span className="text-sm font-medium">Текстовый</span>
+                      </button>
+                    </div>
 
                     {q.questionType === 'choice' && (
                       <div className="space-y-2">

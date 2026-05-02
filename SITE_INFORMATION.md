@@ -1,0 +1,130 @@
+# School - Образовательная платформа
+
+## О проекте
+
+Это образовательная платформа, построенная на современном стеке **Next.js 16** + **PayloadCMS 3.80**. Проект предназначен для организации учебного процесса: управления учениками, тестирования, загрузки материалов.
+
+## Технологии
+
+- **Next.js 16** - React фреймворк с App Router
+- **PayloadCMS 3.80** - Headless CMS для управления контентом
+- **PostgreSQL** - База данных (через @payloadcms/db-postgres)
+- **TailwindCSS 4** - Стилизация
+- **TypeScript** - Типизация
+
+## Структура проекта
+
+```
+src/
+├── app/
+│   ├── (frontend)/           # Публичные страницы
+│   │   ├── lk/               # Личный кабинет ученика
+│   │   │   ├── test/[id]/    # Страница теста с просмотром ошибок
+│   │   │   └── page.tsx      # Главная страница ЛК
+│   │   ├── new-admin/        # Админ-панель преподавателя
+│   │   │   ├── student/[id]/ # Профиль ученика
+│   │   │   └── page.tsx      # Главная страница админки
+│   │   ├── login/            # Страница входа
+│   │   └── register/         # Страница регистрации
+│   ├── (payload)/            # PayloadCMS админка
+│   └── api/                  # API роуты
+│       ├── admin/            # API для админов
+│       ├── auth/             # Аутентификация
+│       └── tests/            # API тестов
+├── collections/              # Коллекции PayloadCMS
+│   ├── Admins.ts
+│   ├── Materials.ts
+│   ├── Media.ts
+│   ├── TestResults.ts
+│   ├── Tests.ts
+│   └── Users.ts
+├── components/               # React компоненты
+│   ├── ui/                   # Переиспользуемые UI компоненты
+│   ├── auth/                 # Компоненты аутентификации
+│   ├── TestCard.tsx          # Карточка теста
+│   ├── TestTaker.tsx         # Прохождение теста
+│   ├── MaterialCard.tsx      # Карточка материала
+│   └── FileViewer.tsx        # Просмотр файлов
+├── lib/                      # Утилиты
+└── utils/                    # Вспомогательные функции
+    ├── auth.ts               # JWT аутентификация
+    └── sendVerificationCodeEmail.ts
+```
+
+## UI Компоненты
+
+Все переиспользуемые UI компоненты находятся в `/components/ui`. При создании новых компонентов сначала проверьте, нет ли подходящего в этой директории.
+
+## Коллекции данных
+
+### Users (Ученики)
+- `name` - Имя
+- `email` - Email
+- `passwordHash` - Хеш пароля
+- `isVerified` - Подтверждена ли почта
+
+### Admins (Преподаватели)
+- `name` - Имя
+- `email` - Email
+- `passwordHash` - Хеш пароля
+
+### Tests (Тесты)
+- `title` - Название
+- `description` - Описание
+- `questions` - Массив вопросов (choice/text)
+- `assignedTo` - Назначенные ученики
+
+### TestResults (Результаты тестов)
+- `test` - Связь с тестом
+- `student` - Связь с учеником
+- `answers` - Ответы ученика (JSON)
+- `score` - Количество правильных
+- `percentage` - Процент правильных
+
+### Materials (Материалы)
+- `title` - Название
+- `description` - Описание
+- `fileUrl` - URL файла
+- `assignedTo` - Назначенные ученики
+
+## Основные функции
+
+1. **Для учеников** (`/lk`):
+   - Просмотр назначенных материалов
+   - Прохождение тестов
+   - Просмотр результатов и ошибок
+
+2. **Для преподавателей** (`/new-admin`):
+   - Управление учениками
+   - Создание и назначение тестов
+   - Загрузка учебных материалов
+   - Просмотр результатов
+
+## Стилизация
+
+Проект использует TailwindCSS 4 с кастомными CSS переменными:
+
+```css
+--color-primary: #6366f1
+--color-primary-light: #818cf8
+--color-secondary: #f472b6
+--color-accent: #34d399
+--color-warning: #fbbf24
+--color-background: #faf7ff
+--color-surface: #ffffff
+--color-text: #1e1b4b
+--color-text-light: #6b7280
+```
+
+## Запуск
+
+```bash
+pnpm install
+pnpm dev
+```
+
+## Переменные окружения
+
+- `DATABASE_URL` - URL PostgreSQL базы данных
+- `PAYLOAD_SECRET` - Секрет для PayloadCMS
+- `JWT_SECRET` - Секрет для JWT токенов
