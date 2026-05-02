@@ -28,6 +28,7 @@ export function AdminTabs({ students }: AdminTabsProps) {
 
   return (
     <div className="p-6">
+      <div className="max-w-5xl mx-auto">
       <nav className="flex gap-1 border-b border-gray-200 mb-6">
         <button className={tabClass('files')} onClick={() => setActiveTab('files')}>
           Файлы
@@ -48,6 +49,7 @@ export function AdminTabs({ students }: AdminTabsProps) {
         {activeTab === 'materials' && <MaterialsTab students={students} />}
         {activeTab === 'tests' && <TestsTab students={students} />}
         {activeTab === 'students' && <StudentsTab students={students} />}
+      </div>
       </div>
     </div>
   )
