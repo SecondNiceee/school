@@ -51,10 +51,4 @@ export const TestResults: CollectionConfig = {
       required: true,
     },
   ],
-  indexes: [
-    {
-      fields: { test: 1, student: 1 },
-      unique: true,
-    },
-  ],
 }
