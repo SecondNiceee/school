@@ -146,132 +146,173 @@ export function MaterialsTab({ students }: MaterialsTabProps) {
 
   if (loading && materials.length === 0) {
     return (
-      <div className="materials-loading">
-        <div className="spinner"></div>
-        <p>Загрузка материалов...</p>
+      <div className="flex flex-col items-center justify-center py-12 gap-4">
+        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        <p className="text-text-light">Загрузка материалов...</p>
       </div>
     )
   }
 
   return (
-    <div className="materials-tab">
-      <div className="materials-header">
-        <h2>Материалы</h2>
-        <button onClick={() => setShowForm(!showForm)} className="create-material-btn">
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-semibold text-text">Материалы</h2>
+        <button
+          onClick={() => setShowForm(!showForm)}
+          className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+            showForm
+              ? 'bg-gray-200 text-text-light hover:bg-gray-300'
+              : 'bg-primary text-white hover:bg-primary-light'
+          }`}
+        >
           {showForm ? 'Отмена' : '+ Создать материал'}
         </button>
       </div>
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="material-form">
-          <div className="form-group">
-            <label>Название *</label>
+        <form onSubmit={handleSubmit} className="bg-surface rounded-xl border border-gray-200 p-6 mb-6 space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-text mb-1">Название *</label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Название материала"
               required
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
             />
           </div>
 
-          <div className="form-group">
-            <label>Описание</label>
+          <div>
+            <label className="block text-sm font-medium text-text mb-1">Описание</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Описание (необязательно)"
               rows={3}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors resize-none"
             />
           </div>
 
-          <div className="form-group">
-            <label>Файл *</label>
+          <div>
+            <label className="block text-sm font-medium text-text mb-1">Файл *</label>
             <input
               type="file"
               onChange={(e) => setFile(e.target.files?.[0] || null)}
               accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.jpg,.jpeg,.png,.gif,.webp,.mp4,.webm,.mp3,.wav"
               required
+              className="w-full text-sm text-text-light file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary/10 file:text-primary file:font-medium hover:file:bg-primary/20 file:cursor-pointer"
             />
-            {file && <span className="file-selected">{file.name}</span>}
+            {file && <span className="block mt-1 text-sm text-accent">{file.name}</span>}
           </div>
 
-          <div className="form-group">
-            <label>Назначить ученикам *</label>
-            <div className="students-actions">
-              <button type="button" onClick={selectAllStudents} className="select-all-btn">
+          <div>
+            <label className="block text-sm font-medium text-text mb-1">Назначить ученикам *</label>
+            <div className="flex gap-2 mb-2">
+              <button
+                type="button"
+                onClick={selectAllStudents}
+                className="px-3 py-1 text-sm text-primary hover:bg-primary/10 rounded transition-colors"
+              >
                 Выбрать всех
               </button>
-              <button type="button" onClick={deselectAllStudents} className="select-all-btn">
+              <button
+                type="button"
+                onClick={deselectAllStudents}
+                className="px-3 py-1 text-sm text-text-light hover:bg-gray-100 rounded transition-colors"
+              >
                 Снять выбор
               </button>
             </div>
-            <div className="students-list">
+            <div className="max-h-48 overflow-y-auto border border-gray-200 rounded-lg p-2 space-y-1">
               {students.map((student) => (
-                <label key={student.id} className="student-checkbox">
+                <label
+                  key={student.id}
+                  className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors ${
+                    selectedStudents.includes(student.id) ? 'bg-primary/10' : 'hover:bg-gray-50'
+                  }`}
+                >
                   <input
                     type="checkbox"
                     checked={selectedStudents.includes(student.id)}
                     onChange={() => handleStudentToggle(student.id)}
+                    className="w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary"
                   />
-                  <span className="student-name">{student.name}</span>
-                  <span className="student-email">{student.email}</span>
+                  <span className="font-medium text-text">{student.name}</span>
+                  <span className="text-sm text-text-light">{student.email}</span>
                 </label>
               ))}
               {students.length === 0 && (
-                <p className="no-students">Нет зарегистрированных учеников</p>
+                <p className="text-center py-4 text-text-light">Нет зарегистрированных учеников</p>
               )}
             </div>
           </div>
 
           {uploading && (
-            <div className="upload-progress">
-              <div className="progress-bar">
-                <div className="progress-fill" style={{ width: `${uploadProgress}%` }}></div>
+            <div className="space-y-2">
+              <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-primary transition-all duration-300"
+                  style={{ width: `${uploadProgress}%` }}
+                />
               </div>
-              <span>{uploadProgress}%</span>
+              <span className="text-sm text-text-light">{uploadProgress}%</span>
             </div>
           )}
 
-          <button type="submit" disabled={uploading} className="submit-btn">
+          <button
+            type="submit"
+            disabled={uploading}
+            className="w-full py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
             {uploading ? 'Загрузка...' : 'Создать материал'}
           </button>
         </form>
       )}
 
-      {error && <div className="materials-error">{error}</div>}
+      {error && (
+        <div className="bg-red-50 text-red-500 p-4 rounded-lg mb-6">{error}</div>
+      )}
 
       {materials.length === 0 && !showForm ? (
-        <div className="materials-empty">
+        <div className="text-center py-12 text-text-light">
           <p>Материалов пока нет</p>
         </div>
       ) : (
-        <div className="materials-list">
+        <div className="space-y-4">
           {materials.map((material) => (
-            <div key={material.id} className="material-item">
-              <div className="material-main">
-                <h3>{material.title}</h3>
-                {material.description && <p className="material-desc">{material.description}</p>}
-                <div className="material-meta">
-                  <span className="material-date">{formatDate(material.createdAt)}</span>
-                  {material.fileName && (
-                    <span className="material-file">{material.fileName}</span>
+            <div
+              key={material.id}
+              className="bg-surface rounded-xl border border-gray-200 p-4 hover:shadow-md transition-shadow"
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-text">{material.title}</h3>
+                  {material.description && (
+                    <p className="text-sm text-text-light mt-1">{material.description}</p>
                   )}
+                  <div className="flex flex-wrap gap-2 mt-2 text-sm text-text-light">
+                    <span>{formatDate(material.createdAt)}</span>
+                    {material.fileName && (
+                      <>
+                        <span>•</span>
+                        <span>{material.fileName}</span>
+                      </>
+                    )}
+                  </div>
                 </div>
-              </div>
-              <div className="material-assigned">
-                <span className="assigned-label">Назначено:</span>
-                <span className="assigned-names">{getAssignedNames(material.assignedTo)}</span>
-              </div>
-              <div className="material-actions">
                 <a
                   href={getProxyFileUrl(material.fileUrl)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="material-btn"
+                  className="px-4 py-2 bg-primary/10 text-primary font-medium rounded-lg hover:bg-primary/20 transition-colors whitespace-nowrap"
                 >
                   Открыть
                 </a>
+              </div>
+              <div className="mt-3 pt-3 border-t border-gray-100">
+                <span className="text-sm font-medium text-text-light">Назначено: </span>
+                <span className="text-sm text-text">{getAssignedNames(material.assignedTo)}</span>
               </div>
             </div>
           ))}

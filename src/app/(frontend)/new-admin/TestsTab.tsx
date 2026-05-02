@@ -106,7 +106,12 @@ export function TestsTab({ students }: TestsTabProps) {
     setQuestions(updated)
   }
 
-  const updateOption = (questionIndex: number, optionIndex: number, field: 'text' | 'isCorrect', value: string | boolean) => {
+  const updateOption = (
+    questionIndex: number,
+    optionIndex: number,
+    field: 'text' | 'isCorrect',
+    value: string | boolean
+  ) => {
     const updated = [...questions]
     if (field === 'isCorrect') {
       // Only one option can be correct
@@ -226,193 +231,246 @@ export function TestsTab({ students }: TestsTabProps) {
 
   if (loading && tests.length === 0) {
     return (
-      <div className="tests-loading">
-        <div className="spinner"></div>
-        <p>Загрузка тестов...</p>
+      <div className="flex flex-col items-center justify-center py-12 gap-4">
+        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        <p className="text-text-light">Загрузка тестов...</p>
       </div>
     )
   }
 
   return (
-    <div className="tests-tab">
-      <div className="tests-header">
-        <h2>Тесты</h2>
-        <button onClick={() => setShowForm(!showForm)} className="create-test-btn">
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-semibold text-text">Тесты</h2>
+        <button
+          onClick={() => setShowForm(!showForm)}
+          className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+            showForm
+              ? 'bg-gray-200 text-text-light hover:bg-gray-300'
+              : 'bg-primary text-white hover:bg-primary-light'
+          }`}
+        >
           {showForm ? 'Отмена' : '+ Создать тест'}
         </button>
       </div>
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="test-form">
-          <div className="form-group">
-            <label>Название теста *</label>
+        <form onSubmit={handleSubmit} className="bg-surface rounded-xl border border-gray-200 p-6 mb-6 space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-text mb-1">Название теста *</label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Название теста"
               required
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
             />
           </div>
 
-          <div className="form-group">
-            <label>Описание</label>
+          <div>
+            <label className="block text-sm font-medium text-text mb-1">Описание</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Описание (необязательно)"
               rows={2}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors resize-none"
             />
           </div>
 
-          <div className="form-group questions-section">
-            <div className="questions-header">
-              <label>Вопросы *</label>
-              <button type="button" onClick={addQuestion} className="add-question-btn">
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-sm font-medium text-text">Вопросы *</label>
+              <button
+                type="button"
+                onClick={addQuestion}
+                className="px-3 py-1 text-sm text-primary hover:bg-primary/10 rounded-lg transition-colors"
+              >
                 + Добавить вопрос
               </button>
             </div>
 
             {questions.length === 0 && (
-              <p className="no-questions">Добавьте хотя бы один вопрос</p>
+              <p className="text-center py-4 text-text-light border border-dashed border-gray-300 rounded-lg">
+                Добавьте хотя бы один вопрос
+              </p>
             )}
 
-            {questions.map((q, qIndex) => (
-              <div key={qIndex} className="question-block">
-                <div className="question-header">
-                  <span className="question-number">Вопрос {qIndex + 1}</span>
-                  <button type="button" onClick={() => removeQuestion(qIndex)} className="remove-btn">
-                    Удалить
-                  </button>
-                </div>
+            <div className="space-y-4">
+              {questions.map((q, qIndex) => (
+                <div key={qIndex} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-sm font-semibold text-text">Вопрос {qIndex + 1}</span>
+                    <button
+                      type="button"
+                      onClick={() => removeQuestion(qIndex)}
+                      className="text-sm text-red-500 hover:text-red-600 transition-colors"
+                    >
+                      Удалить
+                    </button>
+                  </div>
 
-                <div className="question-content">
-                  <input
-                    type="text"
-                    value={q.questionText}
-                    onChange={(e) => updateQuestion(qIndex, 'questionText', e.target.value)}
-                    placeholder="Текст вопроса"
-                    className="question-input"
-                  />
-
-                  <select
-                    value={q.questionType}
-                    onChange={(e) => updateQuestion(qIndex, 'questionType', e.target.value)}
-                    className="question-type-select"
-                  >
-                    <option value="choice">С вариантами ответов</option>
-                    <option value="text">Текстовый ответ</option>
-                  </select>
-
-                  {q.questionType === 'choice' && (
-                    <div className="options-list">
-                      {q.options?.map((opt, oIndex) => (
-                        <div key={oIndex} className="option-row">
-                          <input
-                            type="radio"
-                            name={`correct-${qIndex}`}
-                            checked={opt.isCorrect}
-                            onChange={() => updateOption(qIndex, oIndex, 'isCorrect', true)}
-                            title="Правильный ответ"
-                          />
-                          <input
-                            type="text"
-                            value={opt.text}
-                            onChange={(e) => updateOption(qIndex, oIndex, 'text', e.target.value)}
-                            placeholder={`Вариант ${oIndex + 1}`}
-                            className="option-input"
-                          />
-                          {q.options!.length > 1 && (
-                            <button
-                              type="button"
-                              onClick={() => removeOption(qIndex, oIndex)}
-                              className="remove-option-btn"
-                            >
-                              x
-                            </button>
-                          )}
-                        </div>
-                      ))}
-                      <button type="button" onClick={() => addOption(qIndex)} className="add-option-btn">
-                        + Вариант
-                      </button>
-                    </div>
-                  )}
-
-                  {q.questionType === 'text' && (
+                  <div className="space-y-3">
                     <input
                       type="text"
-                      value={q.correctAnswer || ''}
-                      onChange={(e) => updateQuestion(qIndex, 'correctAnswer', e.target.value)}
-                      placeholder="Правильный ответ"
-                      className="correct-answer-input"
+                      value={q.questionText}
+                      onChange={(e) => updateQuestion(qIndex, 'questionText', e.target.value)}
+                      placeholder="Текст вопроса"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
                     />
-                  )}
+
+                    <select
+                      value={q.questionType}
+                      onChange={(e) => updateQuestion(qIndex, 'questionType', e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors bg-white"
+                    >
+                      <option value="choice">С вариантами ответов</option>
+                      <option value="text">Текстовый ответ</option>
+                    </select>
+
+                    {q.questionType === 'choice' && (
+                      <div className="space-y-2">
+                        {q.options?.map((opt, oIndex) => (
+                          <div key={oIndex} className="flex items-center gap-2">
+                            <input
+                              type="radio"
+                              name={`correct-${qIndex}`}
+                              checked={opt.isCorrect}
+                              onChange={() => updateOption(qIndex, oIndex, 'isCorrect', true)}
+                              title="Правильный ответ"
+                              className="w-4 h-4 text-primary"
+                            />
+                            <input
+                              type="text"
+                              value={opt.text}
+                              onChange={(e) => updateOption(qIndex, oIndex, 'text', e.target.value)}
+                              placeholder={`Вариант ${oIndex + 1}`}
+                              className="flex-1 px-3 py-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
+                            />
+                            {q.options!.length > 1 && (
+                              <button
+                                type="button"
+                                onClick={() => removeOption(qIndex, oIndex)}
+                                className="w-8 h-8 flex items-center justify-center text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                              >
+                                x
+                              </button>
+                            )}
+                          </div>
+                        ))}
+                        <button
+                          type="button"
+                          onClick={() => addOption(qIndex)}
+                          className="text-sm text-primary hover:text-primary-light transition-colors"
+                        >
+                          + Вариант
+                        </button>
+                      </div>
+                    )}
+
+                    {q.questionType === 'text' && (
+                      <input
+                        type="text"
+                        value={q.correctAnswer || ''}
+                        onChange={(e) => updateQuestion(qIndex, 'correctAnswer', e.target.value)}
+                        placeholder="Правильный ответ"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
+                      />
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
 
-          <div className="form-group">
-            <label>Назначить ученикам *</label>
-            <div className="students-actions">
-              <button type="button" onClick={selectAllStudents} className="select-all-btn">
+          <div>
+            <label className="block text-sm font-medium text-text mb-1">Назначить ученикам *</label>
+            <div className="flex gap-2 mb-2">
+              <button
+                type="button"
+                onClick={selectAllStudents}
+                className="px-3 py-1 text-sm text-primary hover:bg-primary/10 rounded transition-colors"
+              >
                 Выбрать всех
               </button>
-              <button type="button" onClick={deselectAllStudents} className="select-all-btn">
+              <button
+                type="button"
+                onClick={deselectAllStudents}
+                className="px-3 py-1 text-sm text-text-light hover:bg-gray-100 rounded transition-colors"
+              >
                 Снять выбор
               </button>
             </div>
-            <div className="students-list">
+            <div className="max-h-48 overflow-y-auto border border-gray-200 rounded-lg p-2 space-y-1">
               {students.map((student) => (
-                <label key={student.id} className="student-checkbox">
+                <label
+                  key={student.id}
+                  className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors ${
+                    selectedStudents.includes(student.id) ? 'bg-primary/10' : 'hover:bg-gray-50'
+                  }`}
+                >
                   <input
                     type="checkbox"
                     checked={selectedStudents.includes(student.id)}
                     onChange={() => handleStudentToggle(student.id)}
+                    className="w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary"
                   />
-                  <span className="student-name">{student.name}</span>
-                  <span className="student-email">{student.email}</span>
+                  <span className="font-medium text-text">{student.name}</span>
+                  <span className="text-sm text-text-light">{student.email}</span>
                 </label>
               ))}
               {students.length === 0 && (
-                <p className="no-students">Нет зарегистрированных учеников</p>
+                <p className="text-center py-4 text-text-light">Нет зарегистрированных учеников</p>
               )}
             </div>
           </div>
 
-          <button type="submit" disabled={submitting} className="submit-btn">
+          <button
+            type="submit"
+            disabled={submitting}
+            className="w-full py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
             {submitting ? 'Создание...' : 'Создать тест'}
           </button>
         </form>
       )}
 
-      {error && <div className="tests-error">{error}</div>}
+      {error && <div className="bg-red-50 text-red-500 p-4 rounded-lg mb-6">{error}</div>}
 
       {tests.length === 0 && !showForm ? (
-        <div className="tests-empty">
+        <div className="text-center py-12 text-text-light">
           <p>Тестов пока нет</p>
         </div>
       ) : (
-        <div className="tests-list">
+        <div className="space-y-4">
           {tests.map((test) => (
-            <div key={test.id} className="test-item">
-              <div className="test-main">
-                <h3>{test.title}</h3>
-                {test.description && <p className="test-desc">{test.description}</p>}
-                <div className="test-meta">
-                  <span className="test-date">{formatDate(test.createdAt)}</span>
-                  <span className="test-questions">{test.questions?.length || 0} вопросов</span>
+            <div
+              key={test.id}
+              className="bg-surface rounded-xl border border-gray-200 p-4 hover:shadow-md transition-shadow"
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-text">{test.title}</h3>
+                  {test.description && (
+                    <p className="text-sm text-text-light mt-1">{test.description}</p>
+                  )}
+                  <div className="flex flex-wrap gap-2 mt-2 text-sm text-text-light">
+                    <span>{formatDate(test.createdAt)}</span>
+                    <span>•</span>
+                    <span>{test.questions?.length || 0} вопросов</span>
+                  </div>
                 </div>
-              </div>
-              <div className="test-assigned">
-                <span className="assigned-label">Назначено:</span>
-                <span className="assigned-names">{getAssignedNames(test.assignedTo || [])}</span>
-              </div>
-              <div className="test-actions">
-                <button onClick={() => handleDelete(test.id)} className="delete-test-btn">
+                <button
+                  onClick={() => handleDelete(test.id)}
+                  className="px-4 py-2 text-red-500 hover:bg-red-50 font-medium rounded-lg transition-colors whitespace-nowrap"
+                >
                   Удалить
                 </button>
+              </div>
+              <div className="mt-3 pt-3 border-t border-gray-100">
+                <span className="text-sm font-medium text-text-light">Назначено: </span>
+                <span className="text-sm text-text">{getAssignedNames(test.assignedTo || [])}</span>
               </div>
             </div>
           ))}

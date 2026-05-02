@@ -46,10 +46,13 @@ export default async function NewAdminPage() {
   }))
 
   return (
-    <div className="new-admin-page">
-      <header className="new-admin-header">
-        <h1>Панель управления</h1>
-        <a href="/admin" className="back-to-payload">
+    <div className="min-h-screen bg-background">
+      <header className="bg-surface border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-text">Панель управления</h1>
+        <a
+          href="/admin"
+          className="px-4 py-2 text-sm font-medium text-primary hover:text-primary-light transition-colors"
+        >
           Payload Admin
         </a>
       </header>
