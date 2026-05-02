@@ -144,6 +144,7 @@
   
   a {
     color: currentColor;
+    cursor: pointer;
   }
   
   a:focus {
@@ -154,6 +155,14 @@
   a:active {
     opacity: 0.7;
     outline: none;
+  }
+  
+  button {
+    cursor: pointer;
+  }
+  
+  button:disabled {
+    cursor: not-allowed;
   }
   
   svg {

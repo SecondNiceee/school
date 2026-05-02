@@ -20,7 +20,7 @@ export function AdminTabs({ students }: AdminTabsProps) {
   const [activeTab, setActiveTab] = useState<'files' | 'materials' | 'tests' | 'students'>('files')
 
   const tabClass = (tab: string) =>
-    `px-6 py-3 text-sm font-medium transition-colors border-b-2 ${
+    `px-6 py-3 text-sm font-medium transition-colors border-b-2 cursor-pointer ${
       activeTab === tab
         ? 'text-primary border-primary bg-primary/5'
         : 'text-text-light border-transparent hover:text-text hover:bg-gray-50'

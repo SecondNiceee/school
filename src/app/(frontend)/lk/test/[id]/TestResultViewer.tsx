@@ -131,7 +131,7 @@ export function TestResultViewer({ test, userId }: TestResultViewerProps) {
                 <span className="text-sm text-text-light">Показать только:</span>
                 <button
                   onClick={() => setShowCorrectOnly(false)}
-                  className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+                  className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors cursor-pointer ${
                     !showCorrectOnly
                       ? 'bg-primary text-white'
                       : 'bg-gray-100 text-text-light hover:bg-gray-200'
@@ -141,7 +141,7 @@ export function TestResultViewer({ test, userId }: TestResultViewerProps) {
                 </button>
                 <button
                   onClick={() => setShowCorrectOnly(true)}
-                  className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+                  className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors cursor-pointer ${
                     showCorrectOnly
                       ? 'bg-red-500 text-white'
                       : 'bg-gray-100 text-text-light hover:bg-gray-200'
