@@ -4,9 +4,20 @@ import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 
 import config from '@/payload.config'
+import { StudentTestsList } from './StudentTestsList'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
+
+interface QuestionResult {
+  questionText: string
+  questionType: 'choice' | 'text'
+  options?: string[]
+  userAnswer: number | string
+  userAnswerDisplay: string
+  correctAnswerDisplay: string
+  isCorrect: boolean
+}
 
 interface TestResult {
   id: number
@@ -18,6 +29,7 @@ interface TestResult {
   totalQuestions: number
   percentage: number
   completedAt: string
+  questions?: QuestionResult[]
 }
 
 interface AssignedTest {
@@ -67,19 +79,22 @@ export default async function StudentProfilePage({
     notFound()
   }
 
-  // Get tests assigned to this student
+  // Get tests assigned to this student (with full question data)
   const testsResult = await payload.find({
     collection: 'tests',
     where: {
       assignedTo: { contains: student.id },
     },
-    depth: 0,
+    depth: 1,
   })
 
   const assignedTests: AssignedTest[] = testsResult.docs.map((t) => ({
     id: t.id,
     title: t.title,
   }))
+
+  // Create a map of tests for later lookup
+  const testsMap = new Map(testsResult.docs.map((t) => [t.id, t]))
 
   // Get student's test results
   const resultsResult = await payload.find({
@@ -90,38 +105,64 @@ export default async function StudentProfilePage({
     depth: 1,
   })
 
-  const testResults: TestResult[] = resultsResult.docs.map((r) => ({
-    id: r.id,
-    test: {
-      id: typeof r.test === 'number' ? r.test : (r.test as any)?.id || 0,
-      title: typeof r.test === 'number' ? 'Тест' : (r.test as any)?.title || 'Тест',
-    },
-    score: r.score,
-    totalQuestions: r.totalQuestions,
-    percentage: r.percentage,
-    completedAt: r.completedAt,
-  }))
+  // Build test results with question details
+  const testResults: TestResult[] = resultsResult.docs.map((r) => {
+    const testId = typeof r.test === 'number' ? r.test : (r.test as any)?.id || 0
+    const testData = testsMap.get(testId)
+    const answers = Array.isArray(r.answers) ? r.answers : []
 
-  // Create a map of test results by test ID
-  const resultsMap = new Map<number, TestResult>()
-  testResults.forEach((r) => {
-    resultsMap.set(r.test.id, r)
+    // Build question results if we have the test data
+    let questions: QuestionResult[] | undefined
+    if (testData?.questions) {
+      questions = testData.questions.map((question, index) => {
+        const userAnswer = answers[index]
+        let isCorrect = false
+        let correctAnswerDisplay = ''
+        let userAnswerDisplay = ''
+
+        if (question.questionType === 'choice') {
+          const correctOptionIndex = question.options?.findIndex((opt) => opt.isCorrect) ?? -1
+          isCorrect = userAnswer === correctOptionIndex
+          correctAnswerDisplay = question.options?.[correctOptionIndex]?.text || ''
+          userAnswerDisplay = question.options?.[userAnswer as number]?.text || 'Нет ответа'
+        } else {
+          const correctAnswer = question.correctAnswer?.toLowerCase().trim() || ''
+          const studentAnswer = userAnswer?.toString().toLowerCase().trim() || ''
+          isCorrect = correctAnswer === studentAnswer
+          correctAnswerDisplay = question.correctAnswer || ''
+          userAnswerDisplay = userAnswer?.toString() || 'Нет ответа'
+        }
+
+        return {
+          questionText: question.questionText,
+          questionType: question.questionType as 'choice' | 'text',
+          options: question.questionType === 'choice' ? question.options?.map((opt) => opt.text) : undefined,
+          userAnswer,
+          userAnswerDisplay,
+          correctAnswerDisplay,
+          isCorrect,
+        }
+      })
+    }
+
+    return {
+      id: r.id,
+      test: {
+        id: testId,
+        title: typeof r.test === 'number' ? 'Тест' : (r.test as any)?.title || 'Тест',
+      },
+      score: r.score,
+      totalQuestions: r.totalQuestions,
+      percentage: r.percentage,
+      completedAt: r.completedAt,
+      questions,
+    }
   })
 
   const avgScore =
     testResults.length > 0
       ? Math.round(testResults.reduce((sum, r) => sum + r.percentage, 0) / testResults.length)
       : 0
-
-  const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString('ru-RU', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    })
-  }
 
   const getScoreColor = (percentage: number) => {
     if (percentage >= 80) return 'text-accent'
@@ -139,14 +180,16 @@ export default async function StudentProfilePage({
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="bg-surface border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-text">Панель управления</h1>
-        <a
-          href="/admin"
-          className="px-4 py-2 text-sm font-medium text-primary hover:text-primary-light transition-colors"
-        >
-          Payload Admin
-        </a>
+      <header className="bg-surface border-b border-gray-200 px-6 py-4">
+        <div className="max-w-4xl mx-auto flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-text">Панель управления</h1>
+          <a
+            href="/admin"
+            className="px-4 py-2 text-sm font-medium text-primary hover:text-primary-light transition-colors"
+          >
+            Payload Admin
+          </a>
+        </div>
       </header>
 
       <div className="max-w-4xl mx-auto px-6 py-8">
@@ -193,49 +236,7 @@ export default async function StudentProfilePage({
           {/* Tests List */}
           <div className="p-6">
             <h2 className="text-lg font-semibold text-text mb-4">Назначенные тесты</h2>
-
-            {assignedTests.length === 0 ? (
-              <p className="text-center py-8 text-text-light">Нет назначенных тестов</p>
-            ) : (
-              <div className="space-y-3">
-                {assignedTests.map((test) => {
-                  const result = resultsMap.get(test.id)
-                  return (
-                    <div
-                      key={test.id}
-                      className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-100 hover:border-primary/20 transition-colors"
-                    >
-                      <div className="flex-1">
-                        <h4 className="font-medium text-text m-0">{test.title}</h4>
-                        {result ? (
-                          <div className="flex items-center gap-3 mt-2">
-                            <span className={`font-semibold ${getScoreColor(result.percentage)}`}>
-                              {result.score} / {result.totalQuestions} ({result.percentage}%)
-                            </span>
-                            <span className="text-sm text-text-light">
-                              {formatDate(result.completedAt)}
-                            </span>
-                          </div>
-                        ) : (
-                          <span className="text-sm text-text-light mt-1 block">Не пройден</span>
-                        )}
-                      </div>
-                      <div>
-                        {result ? (
-                          <span className="px-4 py-2 bg-accent/10 text-accent text-sm font-medium rounded-full">
-                            Выполнено
-                          </span>
-                        ) : (
-                          <span className="px-4 py-2 bg-yellow-500/10 text-yellow-600 text-sm font-medium rounded-full">
-                            Ожидает
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            )}
+            <StudentTestsList assignedTests={assignedTests} testResults={testResults} />
           </div>
         </div>
       </div>
