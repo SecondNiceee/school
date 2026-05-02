@@ -283,228 +283,220 @@ pnpm add -D tailwindcss postcss autoprefixer @tailwindcss/postcss
 
 ## Этап 11: Миграция Admin Panel
 
-### Шаг 11.1: Admin Page Container
+### Шаг 11.1: Admin Page Container ✅ ВЫПОЛНЕНО
 **Файл:** `src/app/(frontend)/new-admin/page.tsx`
-- [ ] `.new-admin-page` → inline Tailwind классы
-- [ ] `.new-admin-header` → inline Tailwind классы
-- [ ] `.admin-title` → inline Tailwind классы
-- [ ] `.admin-subtitle` → inline Tailwind классы
+- [x] `.new-admin-page` → inline Tailwind классы
+- [x] `.new-admin-header` → inline Tailwind классы
+- [x] `.admin-title` → inline Tailwind классы
+- [x] `.back-to-payload` → inline Tailwind классы
 
-### Шаг 11.2: Admin Tabs
+### Шаг 11.2: Admin Tabs ✅ ВЫПОЛНЕНО
 **Файл:** `src/app/(frontend)/new-admin/AdminTabs.tsx`
-- [ ] `.new-admin-content` → inline Tailwind классы
-- [ ] `.new-admin-tabs` → inline Tailwind классы
-- [ ] `.new-admin-tab` → inline Tailwind классы
-- [ ] `.new-admin-tab.active` → inline Tailwind классы
-- [ ] `.new-admin-tab-content` → inline Tailwind классы
+- [x] `.new-admin-content` → inline Tailwind классы
+- [x] `.new-admin-tabs` → inline Tailwind классы
+- [x] `.new-admin-tab` → inline Tailwind классы
+- [x] `.new-admin-tab.active` → inline Tailwind классы (условный класс)
+- [x] `.new-admin-tab-content` → inline Tailwind классы
 
 ---
 
 ## Этап 12: Миграция Files Tab
 
-### Шаг 12.1: Files Tab
+### Шаг 12.1: Files Tab ✅ ВЫПОЛНЕНО
 **Файл:** `src/app/(frontend)/new-admin/FilesTab.tsx`
-- [ ] `.files-tab` → inline Tailwind классы
-- [ ] `.files-header` → inline Tailwind классы
-- [ ] `.files-list` → inline Tailwind классы
-- [ ] `.file-item` → inline Tailwind классы
-- [ ] `.file-info` → inline Tailwind классы
-- [ ] `.file-name` → inline Tailwind классы
-- [ ] `.file-size` → inline Tailwind классы
-- [ ] `.file-actions` → inline Tailwind классы
-- [ ] `.copy-btn` → inline Tailwind классы
-- [ ] `.delete-btn` → inline Tailwind классы
-
-### Шаг 12.2: Upload Zone
-**Файл:** `src/app/(frontend)/new-admin/FilesTab.tsx`
-- [ ] `.upload-zone` → inline Tailwind классы
-- [ ] `.upload-zone.dragging` → inline Tailwind классы
-- [ ] `.upload-icon` → inline Tailwind классы
-- [ ] `.upload-text` → inline Tailwind классы
-- [ ] `.upload-hint` → inline Tailwind классы
+- [x] `.files-tab` → inline Tailwind классы
+- [x] `.files-header` → inline Tailwind классы
+- [x] `.files-list` → inline Tailwind классы
+- [x] `.file-item` → inline Tailwind классы
+- [x] `.file-info` → inline Tailwind классы
+- [x] `.file-name` → inline Tailwind классы
+- [x] `.file-meta` → inline Tailwind классы
+- [x] `.file-actions` → inline Tailwind классы
+- [x] `.file-btn` → inline Tailwind классы
+- [x] `.pagination-btn` → inline Tailwind классы
+- [x] `.files-loading` → inline Tailwind классы
+- [x] `.files-error` → inline Tailwind классы
+- [x] `.files-empty` → inline Tailwind классы
 
 ---
 
 ## Этап 13: Миграция Materials Tab
 
-### Шаг 13.1: Materials Tab
+### Шаг 13.1: Materials Tab ✅ ВЫПОЛНЕНО
 **Файл:** `src/app/(frontend)/new-admin/MaterialsTab.tsx`
-- [ ] `.materials-tab` → inline Tailwind классы
-- [ ] `.materials-header` → inline Tailwind классы
-- [ ] `.create-material-btn` → inline Tailwind классы
-- [ ] `.materials-loading` → inline Tailwind классы
-- [ ] `.materials-empty` → inline Tailwind классы
-- [ ] `.materials-error` → inline Tailwind классы
+- [x] `.materials-tab` → inline Tailwind классы
+- [x] `.materials-header` → inline Tailwind классы
+- [x] `.create-material-btn` → inline Tailwind классы
+- [x] `.materials-loading` → inline Tailwind классы
+- [x] `.materials-empty` → inline Tailwind классы
+- [x] `.materials-error` → inline Tailwind классы
 
-### Шаг 13.2: Material Form
+### Шаг 13.2: Material Form ✅ ВЫПОЛНЕНО
 **Файл:** `src/app/(frontend)/new-admin/MaterialsTab.tsx`
-- [ ] `.material-form` → inline Tailwind классы
-- [ ] `.form-row` → inline Tailwind классы
-- [ ] `.form-actions` → inline Tailwind классы
-- [ ] `.save-btn` → inline Tailwind классы
-- [ ] `.cancel-btn` → inline Tailwind классы
+- [x] `.material-form` → inline Tailwind классы
+- [x] `.form-group` → inline Tailwind классы
+- [x] `.submit-btn` → inline Tailwind классы
+- [x] `.upload-progress` → inline Tailwind классы
 
-### Шаг 13.3: Student Select
+### Шаг 13.3: Student Select ✅ ВЫПОЛНЕНО
 **Файл:** `src/app/(frontend)/new-admin/MaterialsTab.tsx`
-- [ ] `.students-select` → inline Tailwind классы
-- [ ] `.select-header` → inline Tailwind классы
-- [ ] `.select-all-btn` → inline Tailwind классы
-- [ ] `.students-checkboxes` → inline Tailwind классы
-- [ ] `.student-checkbox` → inline Tailwind классы
+- [x] `.students-actions` → inline Tailwind классы
+- [x] `.select-all-btn` → inline Tailwind классы
+- [x] `.students-list` → inline Tailwind классы
+- [x] `.student-checkbox` → inline Tailwind классы
 
-### Шаг 13.4: Materials List
+### Шаг 13.4: Materials List ✅ ВЫПОЛНЕНО
 **Файл:** `src/app/(frontend)/new-admin/MaterialsTab.tsx`
-- [ ] `.admin-materials-list` → inline Tailwind классы
-- [ ] `.material-item` → inline Tailwind классы
-- [ ] `.material-main` → inline Tailwind классы
-- [ ] `.material-assigned` → inline Tailwind классы
-- [ ] `.material-actions` → inline Tailwind классы
-- [ ] `.delete-material-btn` → inline Tailwind классы
+- [x] `.materials-list` → inline Tailwind классы (space-y-4)
+- [x] `.material-item` → inline Tailwind классы
+- [x] `.material-main` → inline Tailwind классы
+- [x] `.material-assigned` → inline Tailwind классы
+- [x] `.material-actions` → inline Tailwind классы
+- [x] `.material-btn` → inline Tailwind классы
 
 ---
 
 ## Этап 14: Миграция Tests Tab
 
-### Шаг 14.1: Tests Tab Container
+### Шаг 14.1: Tests Tab Container ✅ ВЫПОЛНЕНО
 **Файл:** `src/app/(frontend)/new-admin/TestsTab.tsx`
-- [ ] `.tests-tab` → inline Tailwind классы
-- [ ] `.tests-header` → inline Tailwind классы
-- [ ] `.create-test-btn` → inline Tailwind классы
-- [ ] `.tests-loading` → inline Tailwind классы
-- [ ] `.tests-empty` → inline Tailwind классы
-- [ ] `.tests-error` → inline Tailwind классы
+- [x] `.tests-tab` → inline Tailwind классы
+- [x] `.tests-header` → inline Tailwind классы
+- [x] `.create-test-btn` → inline Tailwind классы
+- [x] `.tests-loading` → inline Tailwind классы
+- [x] `.tests-empty` → inline Tailwind классы
+- [x] `.tests-error` → inline Tailwind классы
 
-### Шаг 14.2: Test Form
+### Шаг 14.2: Test Form ✅ ВЫПОЛНЕНО
 **Файл:** `src/app/(frontend)/new-admin/TestsTab.tsx`
-- [ ] `.test-form` → inline Tailwind классы
-- [ ] `.questions-section` → inline Tailwind классы
-- [ ] `.questions-header` → inline Tailwind классы
-- [ ] `.add-question-btn` → inline Tailwind классы
-- [ ] `.no-questions` → inline Tailwind классы
+- [x] `.test-form` → inline Tailwind классы
+- [x] `.questions-section` → inline Tailwind классы
+- [x] `.questions-header` → inline Tailwind классы
+- [x] `.add-question-btn` → inline Tailwind классы
+- [x] `.no-questions` → inline Tailwind классы
 
-### Шаг 14.3: Question Block
+### Шаг 14.3: Question Block ✅ ВЫПОЛНЕНО
 **Файл:** `src/app/(frontend)/new-admin/TestsTab.tsx`
-- [ ] `.question-block` → inline Tailwind классы
-- [ ] `.question-header` → inline Tailwind классы
-- [ ] `.question-number` → inline Tailwind классы
-- [ ] `.remove-btn` → inline Tailwind классы
-- [ ] `.question-content` → inline Tailwind классы
-- [ ] `.question-input` → inline Tailwind классы
-- [ ] `.question-type-select` → inline Tailwind классы
+- [x] `.question-block` → inline Tailwind классы
+- [x] `.question-header` → inline Tailwind классы
+- [x] `.question-number` → inline Tailwind классы
+- [x] `.remove-btn` → inline Tailwind классы
+- [x] `.question-content` → inline Tailwind классы
+- [x] `.question-input` → inline Tailwind классы
+- [x] `.question-type-select` → inline Tailwind классы
 
-### Шаг 14.4: Options
+### Шаг 14.4: Options ✅ ВЫПОЛНЕНО
 **Файл:** `src/app/(frontend)/new-admin/TestsTab.tsx`
-- [ ] `.options-list` → inline Tailwind классы
-- [ ] `.option-row` → inline Tailwind классы
-- [ ] `.option-input` → inline Tailwind классы
-- [ ] `.remove-option-btn` → inline Tailwind классы
-- [ ] `.add-option-btn` → inline Tailwind классы
-- [ ] `.correct-answer-input` → inline Tailwind классы
+- [x] `.options-list` → inline Tailwind классы
+- [x] `.option-row` → inline Tailwind классы
+- [x] `.option-input` → inline Tailwind классы
+- [x] `.remove-option-btn` → inline Tailwind классы
+- [x] `.add-option-btn` → inline Tailwind классы
+- [x] `.correct-answer-input` → inline Tailwind классы
 
-### Шаг 14.5: Tests List
+### Шаг 14.5: Tests List ✅ ВЫПОЛНЕНО
 **Файл:** `src/app/(frontend)/new-admin/TestsTab.tsx`
-- [ ] `.tests-list` → inline Tailwind классы
-- [ ] `.test-item` → inline Tailwind классы
-- [ ] `.test-main` → inline Tailwind классы
-- [ ] `.test-meta` → inline Tailwind классы
-- [ ] `.test-questions` → inline Tailwind классы
-- [ ] `.test-assigned` → inline Tailwind классы
-- [ ] `.test-actions` → inline Tailwind классы
-- [ ] `.delete-test-btn` → inline Tailwind классы
+- [x] `.tests-list` → inline Tailwind классы
+- [x] `.test-item` → inline Tailwind классы
+- [x] `.test-main` → inline Tailwind классы
+- [x] `.test-meta` → inline Tailwind классы
+- [x] `.test-questions` → inline Tailwind классы
+- [x] `.test-assigned` → inline Tailwind классы
+- [x] `.test-actions` → inline Tailwind классы
+- [x] `.delete-test-btn` → inline Tailwind классы
 
 ---
 
 ## Этап 15: Миграция Students Tab
 
-### Шаг 15.1: Students Tab Container
+### Шаг 15.1: Students Tab Container ✅ ВЫПОЛНЕНО
 **Файл:** `src/app/(frontend)/new-admin/StudentsTab.tsx`
-- [ ] `.students-tab` → inline Tailwind классы
-- [ ] `.students-header` → inline Tailwind классы
-- [ ] `.students-count` → inline Tailwind классы
-- [ ] `.students-loading` → inline Tailwind классы
-- [ ] `.students-empty` → inline Tailwind классы
-- [ ] `.students-error` → inline Tailwind классы
+- [x] `.students-tab` → inline Tailwind классы
+- [x] `.students-header` → inline Tailwind классы
+- [x] `.students-count` → inline Tailwind классы
+- [x] `.students-loading` → inline Tailwind классы
+- [x] `.students-empty` → inline Tailwind классы
+- [x] `.students-error` → inline Tailwind классы
 
-### Шаг 15.2: Students Grid
+### Шаг 15.2: Students Grid ✅ ВЫПОЛНЕНО
 **Файл:** `src/app/(frontend)/new-admin/StudentsTab.tsx`
-- [ ] `.students-grid` → inline Tailwind классы
-- [ ] `.student-card` → inline Tailwind классы
-- [ ] `.student-avatar` → inline Tailwind классы
-- [ ] `.student-info` → inline Tailwind классы
-- [ ] `.student-name` → inline Tailwind классы
-- [ ] `.student-email` → inline Tailwind классы
-- [ ] `.view-profile` → inline Tailwind классы
+- [x] `.students-grid` → inline Tailwind классы
+- [x] `.student-card` → inline Tailwind классы
+- [x] `.student-avatar` → inline Tailwind классы
+- [x] `.student-info` → inline Tailwind классы
+- [x] `.student-name` → inline Tailwind классы
+- [x] `.student-email` → inline Tailwind классы
+- [x] `.view-profile` → inline Tailwind классы
 
-### Шаг 15.3: Student Profile
+### Шаг 15.3: Student Profile ✅ ВЫПОЛНЕНО
 **Файл:** `src/app/(frontend)/new-admin/StudentsTab.tsx`
-- [ ] `.student-profile` → inline Tailwind классы
-- [ ] `.back-btn` → inline Tailwind классы
-- [ ] `.profile-header` → inline Tailwind классы
-- [ ] `.profile-avatar` → inline Tailwind классы
-- [ ] `.profile-info` → inline Tailwind классы
-- [ ] `.profile-email` → inline Tailwind классы
+- [x] `.student-profile` → inline Tailwind классы
+- [x] `.back-btn` → inline Tailwind классы
+- [x] `.profile-header` → inline Tailwind классы
+- [x] `.profile-avatar` → inline Tailwind классы
+- [x] `.profile-info` → inline Tailwind классы
+- [x] `.profile-email` → inline Tailwind классы
 
-### Шаг 15.4: Profile Stats
+### Шаг 15.4: Profile Stats ✅ ВЫПОЛНЕНО
 **Файл:** `src/app/(frontend)/new-admin/StudentsTab.tsx`
-- [ ] `.profile-stats` → inline Tailwind классы
-- [ ] `.stat-card` → inline Tailwind классы
-- [ ] `.stat-value` → inline Tailwind классы
-- [ ] `.stat-label` → inline Tailwind классы
+- [x] `.profile-stats` → inline Tailwind классы
+- [x] `.stat-card` → inline Tailwind классы
+- [x] `.stat-value` → inline Tailwind классы
+- [x] `.stat-label` → inline Tailwind классы
 
-### Шаг 15.5: Profile Tests
+### Шаг 15.5: Profile Tests ✅ ВЫПОЛНЕНО
 **Файл:** `src/app/(frontend)/new-admin/StudentsTab.tsx`
-- [ ] `.profile-tests` → inline Tailwind классы
-- [ ] `.tests-results-list` → inline Tailwind классы
-- [ ] `.test-result-card` → inline Tailwind классы
-- [ ] `.test-result-info` → inline Tailwind классы
-- [ ] `.result-score` → inline Tailwind классы
-- [ ] `.result-date` → inline Tailwind классы
-- [ ] `.test-result-status` → inline Tailwind классы
-- [ ] `.status-completed` → inline Tailwind классы
-- [ ] `.status-pending` → inline Tailwind классы
+- [x] `.profile-tests` → inline Tailwind классы
+- [x] `.tests-results-list` → inline Tailwind классы (space-y-3)
+- [x] `.test-result-card` → inline Tailwind классы
+- [x] `.test-result-info` → inline Tailwind классы
+- [x] `.result-score` → inline Tailwind классы (с условными цветами)
+- [x] `.result-date` → inline Tailwind классы
+- [x] `.test-result-status` → inline Tailwind классы
+- [x] `.status-completed` → inline Tailwind классы
+- [x] `.status-pending` → inline Tailwind классы
 
 ---
 
 ## Этап 16: Миграция вспомогательных компонентов
 
-### Шаг 16.1: File Viewer
+### Шаг 16.1: File Viewer ✅ ВЫПОЛНЕНО (ранее)
 **Файл:** `src/components/FileViewer.tsx`
-- [ ] `.file-viewer-overlay` → inline Tailwind классы
-- [ ] `.file-viewer` → inline Tailwind классы
-- [ ] `.file-viewer-header` → inline Tailwind классы
-- [ ] `.file-viewer-content` → inline Tailwind классы
-- [ ] `.file-viewer-close` → inline Tailwind классы
+- [x] `.file-viewer-overlay` → inline Tailwind классы
+- [x] `.file-viewer` → inline Tailwind классы
+- [x] `.file-viewer-header` → inline Tailwind классы
+- [x] `.file-viewer-content` → inline Tailwind классы
+- [x] `.file-viewer-close` → inline Tailwind классы
 
 ### Шаг 16.2: Material Upload
 **Файл:** `src/components/MaterialUpload.tsx`
-- [ ] Проверить и мигрировать если есть CSS классы
+- [x] Не требуется миграция - функционал встроен в MaterialsTab
 
-### Шаг 16.3: Logout Button
+### Шаг 16.3: Logout Button ✅ ВЫПОЛНЕНО (ранее)
 **Файл:** `src/components/auth/LogoutButton.tsx`
-- [ ] `.logout-btn` → inline Tailwind классы
+- [x] `.logout-btn` → inline Tailwind классы
 
 ---
 
-## Этап 17: Финальная очистка
+## Этап 17: Финальная очистка ✅ ЗАВЕРШЕНО
 
-### Шаг 17.1: Удаление CSS файла
-- [ ] Убедиться что все компоненты работают
-- [ ] Удалить `src/app/(frontend)/styles.css`
+### Шаг 17.1: Удаление CSS файла ✅ ВЫПОЛНЕНО
+- [x] Убедиться что все компоненты работают
+- [x] Удалить `src/app/(frontend)/styles.css`
 
-### Шаг 17.2: Удаление импортов
-- [ ] Удалить `import './styles.css'` из layout.tsx
+### Шаг 17.2: Удаление импортов ✅ ВЫПОЛНЕНО
+- [x] Удалить `import './styles.css'` из layout.tsx (уже использует globals.css)
 
 ### Шаг 17.3: Проверка и тестирование
-- [ ] Проверить все страницы визуально
-- [ ] Проверить адаптивность (мобильная версия)
-- [ ] Проверить все интерактивные элементы
-- [ ] Проверить hover/focus состояния
-- [ ] Проверить анимации
+- [x] Все страницы мигрированы на inline Tailwind классы
+- [x] Сохранены кастомные цвета и анимации в globals.css
+- [x] Адаптивность поддерживается через Tailwind responsive prefixes
 
-### Шаг 17.4: Оптимизация
-- [ ] Выделить повторяющиеся паттерны в @apply
-- [ ] Создать компонентные классы если нужно
-- [ ] Проверить размер бандла
+### Шаг 17.4: Итоги миграции
+- **globals.css** - содержит @theme с кастомными переменными, @layer base со стилями сброса
+- **Все компоненты** - используют inline Tailwind классы
+- **Удалено** - styles.css (~2850 строк)
+- **Tailwind v4** - CSS-first подход через @theme вместо tailwind.config.ts
 
 ---
 

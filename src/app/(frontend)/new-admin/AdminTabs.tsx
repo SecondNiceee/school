@@ -19,36 +19,31 @@ interface AdminTabsProps {
 export function AdminTabs({ students }: AdminTabsProps) {
   const [activeTab, setActiveTab] = useState<'files' | 'materials' | 'tests' | 'students'>('files')
 
+  const tabClass = (tab: string) =>
+    `px-6 py-3 text-sm font-medium transition-colors border-b-2 ${
+      activeTab === tab
+        ? 'text-primary border-primary bg-primary/5'
+        : 'text-text-light border-transparent hover:text-text hover:bg-gray-50'
+    }`
+
   return (
-    <div className="new-admin-content">
-      <nav className="new-admin-tabs">
-        <button
-          className={`new-admin-tab ${activeTab === 'files' ? 'active' : ''}`}
-          onClick={() => setActiveTab('files')}
-        >
+    <div className="p-6">
+      <nav className="flex gap-1 border-b border-gray-200 mb-6">
+        <button className={tabClass('files')} onClick={() => setActiveTab('files')}>
           Файлы
         </button>
-        <button
-          className={`new-admin-tab ${activeTab === 'materials' ? 'active' : ''}`}
-          onClick={() => setActiveTab('materials')}
-        >
+        <button className={tabClass('materials')} onClick={() => setActiveTab('materials')}>
           Материалы
         </button>
-        <button
-          className={`new-admin-tab ${activeTab === 'tests' ? 'active' : ''}`}
-          onClick={() => setActiveTab('tests')}
-        >
+        <button className={tabClass('tests')} onClick={() => setActiveTab('tests')}>
           Тесты
         </button>
-        <button
-          className={`new-admin-tab ${activeTab === 'students' ? 'active' : ''}`}
-          onClick={() => setActiveTab('students')}
-        >
+        <button className={tabClass('students')} onClick={() => setActiveTab('students')}>
           Ученики
         </button>
       </nav>
 
-      <div className="new-admin-tab-content">
+      <div>
         {activeTab === 'files' && <FilesTab />}
         {activeTab === 'materials' && <MaterialsTab students={students} />}
         {activeTab === 'tests' && <TestsTab students={students} />}

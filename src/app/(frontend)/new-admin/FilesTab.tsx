@@ -95,60 +95,63 @@ export function FilesTab() {
 
   if (loading && files.length === 0) {
     return (
-      <div className="files-loading">
-        <div className="spinner"></div>
-        <p>Загрузка файлов...</p>
+      <div className="flex flex-col items-center justify-center py-12 gap-4">
+        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        <p className="text-text-light">Загрузка файлов...</p>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="files-error">
-        <p>Ошибка: {error}</p>
-        <button onClick={() => fetchFiles(undefined, true)}>Повторить</button>
+      <div className="flex flex-col items-center justify-center py-12 gap-4">
+        <p className="text-red-500">Ошибка: {error}</p>
+        <button
+          onClick={() => fetchFiles(undefined, true)}
+          className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-light transition-colors"
+        >
+          Повторить
+        </button>
       </div>
     )
   }
 
   return (
-    <div className="files-tab">
-      <div className="files-header">
-        <h2>Файлы в хранилище</h2>
-        <span className="files-count">Страница {page}</span>
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-semibold text-text">Файлы в хранилище</h2>
+        <span className="text-sm text-text-light">Страница {page}</span>
       </div>
 
       {files.length === 0 ? (
-        <div className="files-empty">
+        <div className="text-center py-12 text-text-light">
           <p>Файлов пока нет</p>
         </div>
       ) : (
         <>
-          <div className="files-list">
+          <div className="bg-surface rounded-xl border border-gray-200 divide-y divide-gray-100">
             {files.map((file) => (
-              <div key={file.url} className="file-item">
-                <div className="file-icon">
-                  {getFileIcon(getFileName(file.pathname))}
-                </div>
-                <div className="file-info">
-                  <span className="file-name">{getFileName(file.pathname)}</span>
-                  <span className="file-meta">
+              <div key={file.url} className="flex items-center gap-4 p-4 hover:bg-gray-50 transition-colors">
+                <div className="text-2xl">{getFileIcon(getFileName(file.pathname))}</div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-text truncate">{getFileName(file.pathname)}</p>
+                  <p className="text-sm text-text-light">
                     {formatSize(file.size)} • {formatDate(file.uploadedAt)}
-                  </span>
+                  </p>
                 </div>
-                <div className="file-actions">
+                <div className="flex gap-2">
                   <a
                     href={getProxyFileUrl(file.url)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="file-btn view"
+                    className="px-3 py-1.5 text-sm font-medium text-primary hover:bg-primary/10 rounded-lg transition-colors"
                   >
                     Открыть
                   </a>
                   <a
                     href={getProxyFileUrl(file.url)}
                     download={getFileName(file.pathname)}
-                    className="file-btn download"
+                    className="px-3 py-1.5 text-sm font-medium text-accent hover:bg-accent/10 rounded-lg transition-colors"
                   >
                     Скачать
                   </a>
@@ -157,19 +160,19 @@ export function FilesTab() {
             ))}
           </div>
 
-          <div className="files-pagination">
+          <div className="flex items-center justify-between mt-6">
             <button
               onClick={handlePrevPage}
               disabled={page === 1 || loading}
-              className="pagination-btn"
+              className="px-4 py-2 text-sm font-medium text-text-light hover:text-text disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               В начало
             </button>
-            <span className="pagination-info">Страница {page}</span>
+            <span className="text-sm text-text-light">Страница {page}</span>
             <button
               onClick={handleNextPage}
               disabled={!hasMore || loading}
-              className="pagination-btn"
+              className="px-4 py-2 text-sm font-medium text-primary hover:text-primary-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               Далее
             </button>
