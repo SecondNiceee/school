@@ -78,9 +78,9 @@ export default async function TestPage({
 
   // Build detailed results for each question if completed
   let questionsWithResults = null
-  if (result) {
+  if (result && result.answers) {
     questionsWithResults = test.questions?.map((question, index) => {
-      const userAnswer = result.answers[index]
+      const userAnswer = (result.answers as any[])[index]
       let isCorrect = false
       let correctAnswerDisplay = ''
       let userAnswerDisplay = ''
