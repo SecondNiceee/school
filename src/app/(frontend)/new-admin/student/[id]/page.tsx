@@ -137,7 +137,7 @@ export default async function StudentProfilePage({
           questionText: question.questionText,
           questionType: question.questionType as 'choice' | 'text',
           options: question.questionType === 'choice' ? question.options?.map((opt) => opt.text) : undefined,
-          userAnswer,
+          userAnswer: (typeof userAnswer === 'number' || typeof userAnswer === 'string') ? userAnswer : '',
           userAnswerDisplay,
           correctAnswerDisplay,
           isCorrect,
