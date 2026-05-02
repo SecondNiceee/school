@@ -71,6 +71,8 @@ export interface Config {
     users: User;
     media: Media;
     materials: Material;
+    tests: Test;
+    'test-results': TestResult;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -82,6 +84,8 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     materials: MaterialsSelect<false> | MaterialsSelect<true>;
+    tests: TestsSelect<false> | TestsSelect<true>;
+    'test-results': TestResultsSelect<false> | TestResultsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -206,6 +210,55 @@ export interface Material {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tests".
+ */
+export interface Test {
+  id: number;
+  title: string;
+  description?: string | null;
+  questions: {
+    questionText: string;
+    questionType: 'choice' | 'text';
+    options?:
+      | {
+          text: string;
+          isCorrect?: boolean | null;
+          id?: string | null;
+        }[]
+      | null;
+    correctAnswer?: string | null;
+    id?: string | null;
+  }[];
+  assignedTo?: (number | User)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "test-results".
+ */
+export interface TestResult {
+  id: number;
+  test: number | Test;
+  student: number | User;
+  answers:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  score: number;
+  totalQuestions: number;
+  percentage: number;
+  completedAt: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -243,6 +296,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'materials';
         value: number | Material;
+      } | null)
+    | ({
+        relationTo: 'tests';
+        value: number | Test;
+      } | null)
+    | ({
+        relationTo: 'test-results';
+        value: number | TestResult;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -352,6 +413,47 @@ export interface MaterialsSelect<T extends boolean = true> {
   fileName?: T;
   fileSize?: T;
   assignedTo?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tests_select".
+ */
+export interface TestsSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  questions?:
+    | T
+    | {
+        questionText?: T;
+        questionType?: T;
+        options?:
+          | T
+          | {
+              text?: T;
+              isCorrect?: T;
+              id?: T;
+            };
+        correctAnswer?: T;
+        id?: T;
+      };
+  assignedTo?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "test-results_select".
+ */
+export interface TestResultsSelect<T extends boolean = true> {
+  test?: T;
+  student?: T;
+  answers?: T;
+  score?: T;
+  totalQuestions?: T;
+  percentage?: T;
+  completedAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }

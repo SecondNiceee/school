@@ -54,8 +54,9 @@ export async function GET(
     }
 
     // Build detailed results for each question
+    const answers = Array.isArray(result.answers) ? result.answers : []
     const questionsWithResults = test.questions?.map((question, index) => {
-      const userAnswer = result.answers[index]
+      const userAnswer = answers[index]
       let isCorrect = false
       let correctAnswerDisplay = ''
       let userAnswerDisplay = ''
