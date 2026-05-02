@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import { FilesTab } from './FilesTab'
 import { MaterialsTab } from './MaterialsTab'
+import { TestsTab } from './TestsTab'
+import { StudentsTab } from './StudentsTab'
 
 interface Student {
   id: number
@@ -15,7 +17,7 @@ interface AdminTabsProps {
 }
 
 export function AdminTabs({ students }: AdminTabsProps) {
-  const [activeTab, setActiveTab] = useState<'files' | 'materials'>('files')
+  const [activeTab, setActiveTab] = useState<'files' | 'materials' | 'tests' | 'students'>('files')
 
   return (
     <div className="new-admin-content">
@@ -32,11 +34,25 @@ export function AdminTabs({ students }: AdminTabsProps) {
         >
           Материалы
         </button>
+        <button
+          className={`new-admin-tab ${activeTab === 'tests' ? 'active' : ''}`}
+          onClick={() => setActiveTab('tests')}
+        >
+          Тесты
+        </button>
+        <button
+          className={`new-admin-tab ${activeTab === 'students' ? 'active' : ''}`}
+          onClick={() => setActiveTab('students')}
+        >
+          Ученики
+        </button>
       </nav>
 
       <div className="new-admin-tab-content">
         {activeTab === 'files' && <FilesTab />}
         {activeTab === 'materials' && <MaterialsTab students={students} />}
+        {activeTab === 'tests' && <TestsTab students={students} />}
+        {activeTab === 'students' && <StudentsTab students={students} />}
       </div>
     </div>
   )
