@@ -42,5 +42,7 @@ export function getTokenCookieOptions(isProduction: boolean) {
     sameSite: 'lax' as const,
     path: '/',
     maxAge: TOKEN_EXPIRATION,
+    // Явно указываем expires для лучшей совместимости с браузерами
+    expires: new Date(Date.now() + TOKEN_EXPIRATION * 1000),
   }
 }
