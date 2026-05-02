@@ -7,6 +7,7 @@ import config from '@/payload.config'
 import { LogoutButton } from '@/components/auth/LogoutButton'
 import { MaterialCard } from '@/components/MaterialCard'
 import { verifyToken } from '@/utils/auth'
+import { LKTabs } from './LKTabs'
 
 // Принудительно динамический рендеринг - страница зависит от cookies
 export const dynamic = 'force-dynamic'
@@ -53,7 +54,15 @@ export default async function LKPage() {
     sort: '-createdAt',
   })
 
-  const materials = materialsResponse.docs
+  const materials = materialsResponse.docs.map((m) => ({
+    id: m.id,
+    title: m.title,
+    description: m.description,
+    fileName: m.fileName,
+    fileUrl: m.fileUrl,
+    fileSize: m.fileSize,
+    createdAt: m.createdAt,
+  }))
 
   return (
     <div className="lk-page">
@@ -64,36 +73,7 @@ export default async function LKPage() {
         <LogoutButton />
       </header>
 
-      <div className="lk-content">
-        <nav className="lk-tabs">
-          <button className="lk-tab active">Материалы</button>
-        </nav>
-
-        <section className="lk-materials">
-          {materials.length === 0 ? (
-            <div className="lk-empty">
-              <p>У вас пока нет учебных материалов</p>
-            </div>
-          ) : (
-            <div className="materials-list">
-              {materials.map((material) => (
-                <MaterialCard
-                  key={material.id}
-                  material={{
-                    id: material.id,
-                    title: material.title,
-                    description: material.description,
-                    fileName: material.fileName,
-                    fileUrl: material.fileUrl,
-                    fileSize: material.fileSize,
-                    createdAt: material.createdAt,
-                  }}
-                />
-              ))}
-            </div>
-          )}
-        </section>
-      </div>
+      <LKTabs materials={materials} MaterialCard={MaterialCard} />
     </div>
   )
 }
