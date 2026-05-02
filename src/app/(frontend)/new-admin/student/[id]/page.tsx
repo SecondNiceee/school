@@ -4,7 +4,6 @@ import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 
 import config from '@/payload.config'
-import { verifyToken } from '@/utils/auth'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -33,35 +32,36 @@ export default async function StudentProfilePage({
 }) {
   const { id } = await params
   const cookieStore = await cookies()
-  const token = cookieStore.get('admin-token')?.value
-
-  if (!token) {
-    redirect('/login')
-  }
-
-  const tokenPayload = await verifyToken(token)
-  if (!tokenPayload) {
-    redirect('/login')
-  }
-
   const payloadConfig = await config
   const payload = await getPayload({ config: payloadConfig })
 
-  // Verify admin
-  const admin = await payload.findByID({
-    collection: 'admins',
-    id: tokenPayload.id,
-  })
+  // Проверяем авторизацию через Payload CMS (как в /new-admin)
+  let admin = null
+  try {
+    const result = await payload.auth({
+      headers: new Headers({ cookie: cookieStore.toString() }),
+    })
+    if (result.user?.collection === 'admins') {
+      admin = result.user
+    }
+  } catch {
+    // Not authenticated
+  }
 
   if (!admin) {
-    redirect('/login')
+    redirect('/admin')
   }
 
   // Get student
-  const student = await payload.findByID({
-    collection: 'users',
-    id: Number(id),
-  })
+  let student = null
+  try {
+    student = await payload.findByID({
+      collection: 'users',
+      id: Number(id),
+    })
+  } catch {
+    notFound()
+  }
 
   if (!student) {
     notFound()
@@ -93,8 +93,8 @@ export default async function StudentProfilePage({
   const testResults: TestResult[] = resultsResult.docs.map((r) => ({
     id: r.id,
     test: {
-      id: typeof r.test === 'number' ? r.test : r.test?.id || 0,
-      title: typeof r.test === 'number' ? 'Тест' : r.test?.title || 'Тест',
+      id: typeof r.test === 'number' ? r.test : (r.test as any)?.id || 0,
+      title: typeof r.test === 'number' ? 'Тест' : (r.test as any)?.title || 'Тест',
     },
     score: r.score,
     totalQuestions: r.totalQuestions,
@@ -126,20 +126,30 @@ export default async function StudentProfilePage({
   const getScoreColor = (percentage: number) => {
     if (percentage >= 80) return 'text-accent'
     if (percentage >= 60) return 'text-primary'
-    if (percentage >= 40) return 'text-warning'
+    if (percentage >= 40) return 'text-yellow-500'
     return 'text-red-500'
   }
 
   const getScoreBg = (percentage: number) => {
     if (percentage >= 80) return 'bg-accent/10'
     if (percentage >= 60) return 'bg-primary/10'
-    if (percentage >= 40) return 'bg-warning/10'
+    if (percentage >= 40) return 'bg-yellow-500/10'
     return 'bg-red-500/10'
   }
 
   return (
-    <div className="min-h-screen p-8 bg-background">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-background">
+      <header className="bg-surface border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-text">Панель управления</h1>
+        <a
+          href="/admin"
+          className="px-4 py-2 text-sm font-medium text-primary hover:text-primary-light transition-colors"
+        >
+          Payload Admin
+        </a>
+      </header>
+
+      <div className="max-w-4xl mx-auto px-6 py-8">
         <Link
           href="/new-admin"
           className="inline-flex items-center gap-2 text-text-light hover:text-text mb-6 transition-colors no-underline"
@@ -183,7 +193,7 @@ export default async function StudentProfilePage({
           {/* Tests List */}
           <div className="p-6">
             <h2 className="text-lg font-semibold text-text mb-4">Назначенные тесты</h2>
-            
+
             {assignedTests.length === 0 ? (
               <p className="text-center py-8 text-text-light">Нет назначенных тестов</p>
             ) : (
@@ -216,7 +226,7 @@ export default async function StudentProfilePage({
                             Выполнено
                           </span>
                         ) : (
-                          <span className="px-4 py-2 bg-warning/10 text-warning text-sm font-medium rounded-full">
+                          <span className="px-4 py-2 bg-yellow-500/10 text-yellow-600 text-sm font-medium rounded-full">
                             Ожидает
                           </span>
                         )}
